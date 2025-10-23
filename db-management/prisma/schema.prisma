@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// SKETCH
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          String @id @default(cuid())
+  name        String
+  email       String
+  role        Role @default(CLIENT)
+}
+
+model Stay {
+  id          String @id @default(cuid())
+  startHour   DateTime
+  endHour     DateTime?
+  plateNumber String
+  parkingSlot parkingSlot
+}
+
+model parkingSlot {
+  id           String @id @default(cuid())
+  available    Boolean
+}
+
+model parkingData {
+  id             String @id  @default(cuid())
+  availableSlots Int
+  temperature    Decimal
+  humidity       Decimal
+  date           DateTime
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}
