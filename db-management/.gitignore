@@ -1,5 +1,7 @@
 node_modules
 # Keep environment variables out of version control
 .env
+/text_detection/.env
+/text_detection/__pycache__
 
 /generated/prisma

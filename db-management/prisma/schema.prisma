@@ -17,28 +17,47 @@ model User {
   id          String @id @default(cuid())
   name        String
   email       String
+  plateNumber String?
   role        Role @default(CLIENT)
+  stays       Stay[]
 }
 
 model Stay {
   id          String @id @default(cuid())
+  parkingId   String 
+  parking     parking @relation(fields: [parkingId], references: [id])
   startHour   DateTime
   endHour     DateTime?
   plateNumber String
-  parkingSlot parkingSlot
+  parkingSlotId String 
+  parkingSlot parkingSlot @relation(fields: [parkingSlotId], references: [id])
+
 }
 
-model parkingSlot {
-  id           String @id @default(cuid())
-  available    Boolean
+model parking {
+  id            String @id @default(cuid())
+  name          String
+  location      String
+  totalSlots    Int
+  parkingData   parkingData[]
 }
 
 model parkingData {
   id             String @id  @default(cuid())
+  parkingId      String 
+  parking        parking @relation(fields: [parkingId], references: [id])
   availableSlots Int
   temperature    Decimal
   humidity       Decimal
   date           DateTime
+}
+
+model parkingSlot {
+  id           String @id @default(cuid())
+  parkingId    String 
+  parking      parking @relation(fields: [parkingId], references: [id])
+  available    Boolean
+  ultrasonicId Int
 }
 
 enum Role {
