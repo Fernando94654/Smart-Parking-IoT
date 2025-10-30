@@ -11,11 +11,12 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url = env("DATABASE_URL")
 }
 
 model User {
   id          String @id @default(cuid())
-  name        String
+  name        String @unique
   email       String
   plateNumber String?
   role        Role @default(CLIENT)
@@ -24,40 +25,44 @@ model User {
 
 model Stay {
   id          String @id @default(cuid())
-  parkingId   String 
-  parking     parking @relation(fields: [parkingId], references: [id])
   startHour   DateTime
   endHour     DateTime?
   plateNumber String
+  userId      String
+  user        User @relation(fields: [userId], references: [id])
+  parkingId   String 
+  parking     Parking @relation(fields: [parkingId], references: [id])
   parkingSlotId String 
-  parkingSlot parkingSlot @relation(fields: [parkingSlotId], references: [id])
+  parkingSlot ParkingSlot @relation(fields: [parkingSlotId], references: [id])
 
 }
 
-model parking {
+model Parking {
   id            String @id @default(cuid())
   name          String
   location      String
-  totalSlots    Int
-  parkingData   parkingData[]
+  parkignSlots  ParkingSlot[]
+  parkingData   ParkingData[]
+  stays          Stay[]
 }
 
-model parkingData {
+model ParkingData {
   id             String @id  @default(cuid())
   parkingId      String 
-  parking        parking @relation(fields: [parkingId], references: [id])
+  parking        Parking @relation(fields: [parkingId], references: [id])
   availableSlots Int
   temperature    Decimal
   humidity       Decimal
   date           DateTime
 }
 
-model parkingSlot {
+model ParkingSlot {
   id           String @id @default(cuid())
-  parkingId    String 
-  parking      parking @relation(fields: [parkingId], references: [id])
   available    Boolean
   ultrasonicId Int
+  parkingId    String 
+  parking      Parking @relation(fields: [parkingId], references: [id])
+  stays         Stay[]
 }
 
 enum Role {
