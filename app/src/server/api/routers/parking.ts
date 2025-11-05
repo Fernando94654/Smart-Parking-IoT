@@ -15,9 +15,6 @@ export const parkingRouter = createTRPCRouter({
 
         return parkings;
     }),
-    // Fetch parkings with slots and the latest parkingData entry
-    // Cast ctx.db to any to avoid TS issues if the generated Prisma client typings
-    // are not available / in sync locally. This is low-risk for a dashboard template.
     getParkingStays: publicProcedure.input(
         z.string()
     ).query(async ({ input }) => {
