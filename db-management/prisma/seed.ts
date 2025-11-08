@@ -1,4 +1,4 @@
-import { PrismaClient, Parking, ParkingSlot, User } from "../generated/prisma/client"
+import { PrismaClient, Parking, ParkingSlot, User } from "@prisma/client";
 import "dotenv/config"
 
 const prisma = new PrismaClient()
