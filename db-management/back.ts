@@ -4,11 +4,10 @@ import axios from "axios";
 import FormData from "form-data";
 import sharp from "sharp";
 import { PrismaClient } from "./generated/prisma/client";
-import { User } from "./generated/prisma/browser";
 
 const prisma = new PrismaClient()
 // const client = mqtt.connect('mqtt://10.24.111.223:1883');
-const client = mqtt.connect('mqtt://192.168.1.69:1883');
+const client = mqtt.connect('mqtt:// 192.168.137.1:1883');    
 const fs = require('fs');
 
 const camTopic = 'cam/topic';
