@@ -23,7 +23,6 @@ async function main() {
     const created = await prisma.parkingSlot.create({
       data: {
         available: s.available,
-        ultrasonicId: s.ultrasonicId,
         parkingId: parking.id,
       },
     })

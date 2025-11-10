@@ -17,16 +17,13 @@ model User {
 }
 
 model Stay {
-  id            String      @id
-  startHour     DateTime
-  endHour       DateTime?
-  plateNumber   String
-  userId        String
-  parkingId     String
-  parkingSlotId String
-  parking       Parking     @relation(fields: [parkingId], references: [id])
-  parkingSlot   ParkingSlot @relation(fields: [parkingSlotId], references: [id])
-  User          User        @relation(fields: [userId], references: [id])
+  id        String    @id
+  startHour DateTime
+  endHour   DateTime?
+  userId    String
+  parkingId String
+  parking   Parking   @relation(fields: [parkingId], references: [id])
+  User      User      @relation(fields: [userId], references: [id])
 }
 
 model Parking {
@@ -49,12 +46,14 @@ model ParkingData {
 }
 
 model ParkingSlot {
-  id           String  @id
-  available    Boolean
-  ultrasonicId Int
-  parkingId    String
-  Parking      Parking @relation(fields: [parkingId], references: [id])
-  Stay         Stay[]
+  available Boolean
+  parkingId String
+  id        Int     @id @default(autoincrement())
+  Parking   Parking @relation(fields: [parkingId], references: [id])
+}
+
+model Avenue {
+  id String @id
 }
 
 enum Role {

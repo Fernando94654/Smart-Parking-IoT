@@ -4,11 +4,10 @@ import axios from "axios";
 import FormData from "form-data";
 import sharp from "sharp";
 import { PrismaClient } from "./generated/prisma/client";
-import { User } from "./generated/prisma/browser";
 
 const prisma = new PrismaClient()
 // const client = mqtt.connect('mqtt://10.24.111.223:1883');
-const client = mqtt.connect('mqtt://192.168.1.69:1883');
+const client = mqtt.connect('mqtt:// 192.168.137.1:1883');    
 const fs = require('fs');
 
 const camTopic = 'cam/topic';
@@ -32,16 +31,16 @@ async function getTextFromImage(buffer: Buffer) {
 
 client.on('connect', () => {
     console.log('Connected to MQTT broker');
-    client.subscribe(camTopic, { qos: 1 }, (err) => {
+    client.subscribe(camTopic, { qos: 1 }, (err) => { 
         if(!err) console.log(`Subscribed to ${camTopic}`);
         else console.error("Subscribe error:", err);
     });
 
-    const message = 'capture';
-    client.publish(messageTopic, message, { qos: 1 }, (err) => {
-        if(!err) console.log(`Message published to ${messageTopic}:`, message);
-        else console.error("Publish error:", err);
-    });
+    // const message = 'open_entry';
+    // client.publish(messageTopic, message, { qos: 1 }, (err) => {
+    //     if(!err) console.log(`Message published to ${messageTopic}:`, message);
+    //     else console.error("Publish error:", err);
+    // });
 });
 
 client.on('message', async (topic, message) => {
@@ -50,7 +49,7 @@ client.on('message', async (topic, message) => {
         console.log('Image data received:', message);
         const base64Data = message.toString();
         const unFlipImageBuffer = Buffer.from(base64Data, 'base64');
-        const imageBuffer = await sharp(unFlipImageBuffer).flip().toBuffer();
+        const imageBuffer = await sharp(unFlipImageBuffer).flop().toBuffer();
 
         fs.writeFile('received_image.jpg', imageBuffer, (err: Error) => {
             if(err) {
@@ -62,16 +61,26 @@ client.on('message', async (topic, message) => {
         // Example usage
         const result = await getTextFromImage(imageBuffer);
         console.log("Text detection result:", result);
-
-        const user = await prisma.user.findFirst({
-            where: { plateNumber: result.plate ?? "" },  
-            select: {
-                name: true,
-            },
-        });
+        let user;
+        if(result) {
+            user = await prisma.user.findFirst({
+                where: { plateNumber: result.plate ?? "" },
+                select: {
+                    name: true,
+                },
+            });
+        }else {
+            user = null;
+        }
 
         if(user) {
-            console.log("User found:", user.name);
+            console.log("User found:", user.name); 
+            const message = 'open_entry';
+            client.publish(messageTopic, message, { qos: 1 }, (err) => {
+                if(!err) console.log(`Message published to ${messageTopic}:`, message);
+                else console.error("Publish error:", err);
+            });
+
         } else {
             console.log("No user found with plate number:", result.plate);
         }
