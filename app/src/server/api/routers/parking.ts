@@ -23,7 +23,13 @@ export const parkingRouter = createTRPCRouter({
                 parkingId: input,
             },
         });
-        return stays;
+        const users = await db.user.findMany(
+            { where: { id: { in: stays.map((stay) => stay.userId) } } }
+        );
+        return stays.map((stay) => ({
+            ...stay,
+            userName: users.find((user) => user.id === stay.userId)?.name ?? "Desconocido",
+        }));
     }),
     getParkingSlots: publicProcedure.input(
         z.string()
