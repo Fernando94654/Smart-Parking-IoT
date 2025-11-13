@@ -2,10 +2,11 @@
 
 import Link from "next/link"
 import { useState } from "react"
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
-
+  const { data: session } = useSession();
   return (
   <header className="w-full bg-linear-to-r from-sky-600 via-cyan-500 to-emerald-400 text-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -30,9 +31,15 @@ export default function Navbar() {
             <Link href="/dashboard" className="text-sm font-medium hover:underline">
               User Dashboard
             </Link>
-            <Link href="/login" className="text-sm font-semibold bg-white text-sky-700 px-3 py-1 rounded-md shadow-sm hover:opacity-95">
-              Login
-            </Link>
+            {session ? (
+              <p>{session.user.name}</p>
+            ) : (
+              <>
+                <button onClick={() => signIn()} className="text-sm font-semibold bg-white text-sky-700 px-3 py-1 rounded-md shadow-sm hover:opacity-95">
+                  Login
+                </button>
+              </>
+            )}
           </nav>
 
           <div className="md:hidden">
