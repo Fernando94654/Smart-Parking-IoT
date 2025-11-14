@@ -1,5 +1,5 @@
 import { HydrateClient } from "~/trpc/server";
-import DashboardPage from "./dashboard/page";
+import DashboardPage from "./pages/dashboard/page";
 
 export default async function Home() {
 
