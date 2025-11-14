@@ -70,9 +70,9 @@ export default function Navbar() {
             <Link href="/dashboard" className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-white/10">
               User Dashboard
             </Link>
-            <Link href="/login" className="block px-3 py-2 rounded-md text-base font-semibold bg-white text-sky-700">
+            <button onClick={() => signIn()} className="text-sm font-semibold bg-white text-sky-700 px-3 py-1 rounded-md shadow-sm hover:opacity-95">
               Login
-            </Link>
+            </button>
           </div>
         </div>
       )}
