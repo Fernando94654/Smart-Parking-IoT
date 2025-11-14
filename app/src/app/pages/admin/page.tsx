@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Stays from "../_components/slot/stays";
+import Stays from "~/app/_components/slot/stays";
 
 export default function AdminPage() {
     // TODO: Replace with actual parking selection logic
