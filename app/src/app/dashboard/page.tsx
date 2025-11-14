@@ -1,4 +1,4 @@
-import Dashboard from "../_components/dashboard";
+import Dashboard from "../_components/Dashboard";
 export const metadata = {
   title: "Dashboard",
 };
