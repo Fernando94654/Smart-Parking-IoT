@@ -1,122 +1,182 @@
-import { PrismaClient, Parking, ParkingSlot, User } from "../generated/prisma/client"
-import "dotenv/config"
+// prisma/seed.ts
+import { PrismaClient } from '../generated/prisma'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  // Create a single parking
-  const parking: Parking = await prisma.parking.create({
-    data: { name: "Central Park", location: "Av. Principal 100" },
+  console.log('Starting seed...')
+
+  // Clear existing data in correct order (respecting relations)
+  await prisma.measurement.deleteMany()
+  await prisma.sensor.deleteMany()
+  await prisma.stay.deleteMany()
+  await prisma.parkingData.deleteMany()
+  await prisma.parkingSlot.deleteMany()
+  await prisma.parking.deleteMany()
+  await prisma.user.deleteMany()
+  await prisma.avenue.deleteMany()
+
+  // Create users - use string literals for enum values
+  const user1 = await prisma.user.create({
+    data: {
+      name: 'john_doe',
+      email: 'john@example.com',
+      plateNumber: 'ABC-123',
+      role: 'CLIENT'  // String literal instead of enum
+    }
   })
 
-  // Create 5 parking slots for this parking
-  const slotInputs = [
-    { available: true, ultrasonicId: 101 },
-    { available: false, ultrasonicId: 102 },
-    { available: true, ultrasonicId: 103 },
-    { available: true, ultrasonicId: 104 },
-    { available: false, ultrasonicId: 105 },
-  ]
+  const user2 = await prisma.user.create({
+    data: {
+      name: 'jane_smith',
+      email: 'jane@example.com',
+      plateNumber: 'XYZ-789',
+      role: 'CLIENT'  // String literal instead of enum
+    }
+  })
 
-  const parkingSlots: ParkingSlot[] = []
-  for (const s of slotInputs) {
-    const created = await prisma.parkingSlot.create({
-      data: {
-        available: s.available,
-        parkingId: parking.id,
-      },
+  const admin = await prisma.user.create({
+    data: {
+      name: 'admin',
+      email: 'admin@parking.com',
+      plateNumber: 'ADM-001',
+      role: 'ADMIN'  // String literal instead of enum
+    }
+  })
+
+  // Create parking lots
+  const parking1 = await prisma.parking.create({
+    data: {
+      name: 'Downtown Parking',
+      location: '123 Main Street'
+    }
+  })
+
+  const parking2 = await prisma.parking.create({
+    data: {
+      name: 'Mall Parking',
+      location: '456 Oak Avenue'
+    }
+  })
+
+  // Create parking slots
+  await Promise.all([
+    prisma.parkingSlot.create({
+      data: { available: true, parkingId: parking1.id }
+    }),
+    prisma.parkingSlot.create({
+      data: { available: false, parkingId: parking1.id }
+    }),
+    prisma.parkingSlot.create({
+      data: { available: true, parkingId: parking1.id }
+    }),
+    prisma.parkingSlot.create({
+      data: { available: true, parkingId: parking2.id }
+    }),
+    prisma.parkingSlot.create({
+      data: { available: true, parkingId: parking2.id }
     })
-    parkingSlots.push(created)
-  }
+  ])
 
-  // Create 5 parking data entries (status records)
-  const now = new Date()
-  const parkingDataInputs = Array.from({ length: 5 }).map((_, i) => ({
-    parkingId: parking.id,
-    availableSlots: Math.max(0, 10 - i),
-    temperature: (20 + i * 0.7).toFixed(1),
-    humidity: (40 + i * 1.5).toFixed(1),
-    date: new Date(now.getTime() - i * 1000 * 60 * 60),
-  }))
-
-  for (const pd of parkingDataInputs) {
-    await prisma.parkingData.create({ data: pd })
-  }
-
-  // Create 5 users
-  const userInputs = [
-    { name: "Ana Pérez", email: "ana.perez@example.com", plateNumber: "ABC-123", role: "CLIENT" as const },
-    { name: "Carlos Gómez", email: "carlos.gomez@example.com", plateNumber: "DEF-456", role: "CLIENT" as const },
-    { name: "María Ruiz", email: "maria.ruiz@example.com", plateNumber: "GHI-789", role: "CLIENT" as const },
-    { name: "Administrador", email: "admin@example.com", plateNumber: null, role: "ADMIN" as const },
-    { name: "Jorge Lopez", email: "jorge.lopez@example.com", plateNumber: "JKL-012", role: "CLIENT" as const },
-  ]
-
-  const users: User[] = []
-  for (const u of userInputs) {
-    const created = await prisma.user.create({ data: u })
-    users.push(created)
-  }
-
-  // Create 5 stays linking users, the same parking, and parking slots
-  const staysInputs = [
-    {
-      startHour: new Date(now.getTime() - 1000 * 60 * 60 * 3),
-      endHour: new Date(now.getTime() - 1000 * 60 * 60 * 2),
-      plateNumber: users[0].plateNumber ?? "ABC-123",
-      userId: users[0].id,
-      parkingId: parking.id,
-      parkingSlotId: parkingSlots[0].id,
-    },
-    {
-      startHour: new Date(now.getTime() - 1000 * 60 * 60 * 5),
-      endHour: null,
-      plateNumber: users[1].plateNumber ?? "DEF-456",
-      userId: users[1].id,
-      parkingId: parking.id,
-      parkingSlotId: parkingSlots[1].id,
-    },
-    {
-      startHour: new Date(now.getTime() - 1000 * 60 * 30),
-      endHour: null,
-      plateNumber: users[2].plateNumber ?? "GHI-789",
-      userId: users[2].id,
-      parkingId: parking.id,
-      parkingSlotId: parkingSlots[2].id,
-    },
-    {
-      startHour: new Date(now.getTime() - 1000 * 60 * 60 * 24),
-      endHour: new Date(now.getTime() - 1000 * 60 * 60 * 23),
-      plateNumber: users[4].plateNumber ?? "JKL-012",
-      userId: users[4].id,
-      parkingId: parking.id,
-      parkingSlotId: parkingSlots[3].id,
-    },
-    {
-      startHour: new Date(now.getTime() - 1000 * 60 * 60 * 2),
-      endHour: new Date(now.getTime() - 1000 * 60 * 60 * 1),
-      plateNumber: "XYZ-999",
-      userId: users[3].id,
-      parkingId: parking.id,
-      parkingSlotId: parkingSlots[4].id,
-    },
-  ]
-
-  for (const s of staysInputs) {
-    await prisma.stay.create({ data: s })
-  }
-
-  console.log("Seed completed successfully:", {
-    parking: 1,
-    parkingSlots: parkingSlots.length,
-    parkingData: parkingDataInputs.length,
-    users: users.length,
-    stays: staysInputs.length,
+  // Create parking data
+  await prisma.parkingData.create({
+    data: {
+      parkingId: parking1.id,
+      availableSlots: 2,
+      temperature: 22.5,
+      humidity: 65.0,
+      date: new Date()
+    }
   })
+
+  await prisma.parkingData.create({
+    data: {
+      parkingId: parking2.id,
+      availableSlots: 5,
+      temperature: 24.0,
+      humidity: 60.0,
+      date: new Date()
+    }
+  })
+
+  // Create sensors - use string literals for enum values
+  const sensor1 = await prisma.sensor.create({
+    data: {
+      type: 'ULTRASONIC',  // String literal instead of enum
+      location: 'Entrance Gate A',
+      description: 'Ultrasonic sensor for vehicle detection',
+      status: 'ACTIVE'
+    }
+  })
+
+  const sensor2 = await prisma.sensor.create({
+    data: {
+      type: 'CAMERA',  // String literal instead of enum
+      location: 'Level 1 - Section B',
+      description: 'Camera for license plate recognition',
+      status: 'ACTIVE'
+    }
+  })
+
+  // Create measurements
+  await prisma.measurement.create({
+    data: {
+      sensorId: sensor1.id,
+      value: 1.5,
+      timestamp: new Date()
+    }
+  })
+
+  await prisma.measurement.create({
+    data: {
+      sensorId: sensor2.id,
+      value: 0.8,
+      timestamp: new Date()
+    }
+  })
+
+  // Create stays
+  await prisma.stay.create({
+    data: {
+      startHour: new Date('2024-01-15T08:00:00Z'),
+      endHour: new Date('2024-01-15T12:30:00Z'),
+      userId: user1.id,
+      parkingId: parking1.id
+    }
+  })
+
+  await prisma.stay.create({
+    data: {
+      startHour: new Date('2024-01-15T09:15:00Z'),
+      endHour: new Date('2024-01-15T11:45:00Z'),
+      userId: user2.id,
+      parkingId: parking2.id
+    }
+  })
+
+  // Create avenue
+  await prisma.avenue.create({
+    data: {
+      id: 'main-avenue'
+    }
+  })
+
+  console.log('Seed completed successfully!')
+  console.log(`Created:
+    - 3 users
+    - 2 parking lots  
+    - 5 parking slots
+    - 2 parking data entries
+    - 2 sensors
+    - 2 measurements
+    - 2 stays
+    - 1 avenue
+  `)
 }
 
 main()
   .catch((e) => {
+    console.error('Error during seed:')
     console.error(e)
     process.exit(1)
   })
