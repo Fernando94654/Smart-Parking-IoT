@@ -37,7 +37,7 @@ const Slots = ({ selectedParking }: { selectedParking: string }) => {
       ) : !slots || slots.length === 0 ? (
         <div className="text-gray-500">No hay slots para este parking.</div>
       ) : (
-        <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
+        <div className="grid gap-4j grid-cols-2">
           {slots.map((slot: ParkingSlot) => (
             <Slot key={slot.id} slot={slot} />
           ))}

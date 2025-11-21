@@ -5,7 +5,7 @@ import type { Parking } from "@prisma/client";
 import { api } from "~/trpc/react";
 import LineChartComponent from "./lineChart";
 import Slots from "./slot/slots";
-
+import ChangeUserPlate from "./changeUserPlate";
 export default function Dashboard() {
   const { data: parkings, isLoading: loadingParkings } =
     api.parking.getAll.useQuery();
@@ -16,6 +16,7 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 font-sans text-gray-800 w-full">
+      <ChangeUserPlate />
       <header className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Parking Dashboard</h1>
@@ -46,7 +47,7 @@ export default function Dashboard() {
         )}
       </section>
 
-      <main className=" gap-6 md:grid-cols-2">
+      <main className="">
 
         {selectedParking && (
           <Slots selectedParking={selectedParking} />
