@@ -21,40 +21,40 @@ const Stays = ({ selectedParking }: { selectedParking: string }) => {
   const { data: stays, isLoading } = api.parking.getParkingStays.useQuery(selectedParking ?? "", { enabled: !!selectedParking })
 
   return (
-    <section className="rounded-lg bg-white p-4 shadow">
+    <section className="rounded-lg card-dark p-4 shadow">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-medium">Stays</h2>
-        <div className="text-sm text-gray-600">{stays ? `${stays.length} registros` : "—"}</div>
+        <h2 className="text-lg font-medium text-white">Stays</h2>
+        <div className="text-sm text-muted">{stays ? `${stays.length} registros` : "—"}</div>
       </div>
 
       {isLoading ? (
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-10 bg-gray-100 rounded animate-pulse" />
+            <div key={i} className="h-10 bg-white/6 rounded animate-pulse" />
           ))}
         </div>
       ) : !stays || stays.length === 0 ? (
-        <div className="py-6 text-center text-gray-600">No hay stays para este parking.</div>
+        <div className="py-6 text-center text-muted">No hay stays para este parking.</div>
       ) : (
         <>
-          <div className="hidden md:block">
+          <div className="hidden md:block overflow-auto">
             <table className="w-full text-sm text-left">
               <thead>
-                <tr className="text-xs text-gray-500">
+                <tr className="text-xs text-muted">
                   <th className="py-2">Usuario</th>
                   <th className="py-2">Inicio</th>
                   <th className="py-2">Fin</th>
                   <th className="py-2">Duración</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-white/4">
                 {stays.map((s) => (
-                  <tr key={s.id}>
-                    <td className="py-3 text-sm text-gray-800">{s.userName}</td>
-                    <td className="py-3 text-sm text-gray-700">{formatDate(s.startHour)}</td>
-                    <td className="py-3 text-sm text-gray-700">{s.endHour ? formatDate(s.endHour) : "En curso"}</td>
-                    <td className="py-3 text-sm text-gray-700">{formatDuration(s.startHour, s.endHour)}</td>
-                  </tr>
+                      <tr key={s.id} className="hover:bg-white/5 transition-colors">
+                        <td className="py-3 text-sm text-white">{s.userName}</td>
+                        <td className="py-3 text-sm text-muted">{formatDate(s.startHour)}</td>
+                        <td className="py-3 text-sm text-muted">{s.endHour ? formatDate(s.endHour) : "En curso"}</td>
+                        <td className="py-3 text-sm text-muted">{formatDuration(s.startHour, s.endHour)}</td>
+                      </tr>
                 ))}
               </tbody>
             </table>
@@ -63,20 +63,20 @@ const Stays = ({ selectedParking }: { selectedParking: string }) => {
           <div className="md:hidden space-y-2">
             {stays.map((s) => {
               return (
-                <div key={s.id} className="p-3 rounded bg-gray-50 border">
+                <div key={s.id} className="p-3 rounded card-dark border">
                   <div className="flex justify-between items-start">
                     <div>
-                      <div className="text-sm font-medium text-gray-800">Usuario</div>
-                      <div className="text-xs text-gray-600">{s.userName}</div>
+                      <div className="text-sm font-medium text-white">Usuario</div>
+                      <div className="text-xs text-muted">{s.userName}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-muted">{s.endHour ? "Finalizado" : "En curso"}</div>
+                      <div className="text-xs text-muted">{formatDuration(s.startHour, s.endHour)}</div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-xs text-gray-600">{s.endHour ? "Finalizado" : "En curso"}</div>
-                    <div className="text-xs text-gray-500">{formatDuration(s.startHour, s.endHour)}</div>
-                  </div>
+                  <div className="mt-2 text-xs text-muted">{formatDate(s.startHour)} — {s.endHour ? formatDate(s.endHour) : "—"}</div>
                 </div>
-                <div className="mt-2 text-xs text-gray-600">{formatDate(s.startHour)} — {s.endHour ? formatDate(s.endHour) : "—"}</div>
-              </div>
-            )})}
+              )})}
           </div>
         </>
       )}

@@ -43,10 +43,10 @@ const ChangeUserPlate: React.FC = () => {
 
     if (!session) {
         return (
-            <div className="max-w-md mx-auto p-4 rounded-lg bg-linear-to-r from-sky-50 to-emerald-50 shadow">
-                <p className="text-sm text-sky-700">Please sign in to view and change your plate.</p>
-            </div>
-        );
+            <div className="max-w-md mx-auto p-4 rounded-lg glass border border-white/5">
+                    <p className="text-sm text-muted">Please sign in to view and change your plate.</p>
+                </div>
+            );
     }
 
     const validatePlate = (p: string) => {
@@ -68,17 +68,17 @@ const ChangeUserPlate: React.FC = () => {
     };
 
     return (
-        <div className="relative max-w-lg mx-auto bg-white/60 backdrop-blur-sm border border-sky-100 rounded-xl p-4 shadow-md">
+        <div className="relative max-w-lg mx-auto card-dark rounded-xl p-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-lg font-semibold text-sky-800">Vehicle Plate</h3>
-                    <p className="text-sm text-sky-600">Your currently registered plate</p>
+                    <h3 className="text-lg font-semibold text-white">Vehicle Plate</h3>
+                    <p className="text-sm text-muted">Your currently registered plate</p>
                 </div>
                 <div className="flex items-center gap-2">
                         {!editing ? (
                                 <button
                                     onClick={() => setEditing(true)}
-                                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-linear-to-r from-sky-500 to-emerald-400 text-white shadow hover:opacity-95 transition transform hover:-translate-y-0.5 hover:scale-105"
+                                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md neon-gradient text-white shadow hover:opacity-95 transition transform hover:-translate-y-0.5 hover:scale-105"
                                 >
                                     Edit
                                 </button>
@@ -88,7 +88,7 @@ const ChangeUserPlate: React.FC = () => {
                                 setEditing(false);
                                 setValue(currentPlate ?? "");
                             }}
-                                    className="px-3 py-1 rounded-md bg-white border text-sky-700 hover:bg-sky-50 transition transform hover:-translate-y-0.5 hover:scale-105"
+                                    className="px-3 py-1 rounded-md bg-white/5 border text-white/80 hover:bg-white/6 transition transform hover:-translate-y-0.5 hover:scale-105"
                         >
                             Cancel
                         </button>
@@ -98,14 +98,14 @@ const ChangeUserPlate: React.FC = () => {
 
             <div className="mt-4">
                 {loadingPlate ? (
-                    <div className="text-sky-600">Loading...</div>
+                    <div className="text-muted">Loading...</div>
                 ) : (
                     <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-4">
-                            <div className="px-4 py-2 rounded-md bg-sky-100 text-sky-800 font-mono text-lg tracking-wider">
+                            <div className="px-4 py-2 rounded-md bg-white/6 text-white font-mono text-lg tracking-wider">
                                 {currentPlate ?? "—"}
                             </div>
-                            <div className="text-sm text-sky-600">You can change this at any time.</div>
+                            <div className="text-sm text-muted">You can change this at any time.</div>
                         </div>
 
                         {editing && (
@@ -115,13 +115,13 @@ const ChangeUserPlate: React.FC = () => {
                                     value={value}
                                     onChange={(e) => setValue(e.target.value)}
                                     disabled={isLoading}
-                                    className={`flex-1 px-3 py-2 rounded-md border border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-300 ${isLoading ? "opacity-60" : ""}`}
+                                    className={`flex-1 px-3 py-2 rounded-md border border-white/6 focus:outline-none focus:ring-2 focus:ring-(--accent-1) ${isLoading ? "opacity-60" : ""}`}
                                     placeholder="Enter new plate (e.g. ABC1234)"
                                 />
                                 <button
                                     onClick={onSave}
                                     disabled={isLoading}
-                                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-md bg-linear-to-r from-emerald-400 to-sky-500 text-white shadow disabled:opacity-60 transition transform ${isLoading ? "animate-pulse cursor-wait scale-100" : "hover:-translate-y-0.5 hover:scale-105"}`}
+                                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-md neon-gradient text-white shadow disabled:opacity-60 transition transform ${isLoading ? "animate-pulse cursor-wait scale-100" : "hover:-translate-y-0.5 hover:scale-105"}`}
                                 >
                                     {isLoading ? (
                                         <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
@@ -138,7 +138,7 @@ const ChangeUserPlate: React.FC = () => {
                         {message && (
                             <div
                                 role="status"
-                                className={`px-3 py-2 rounded-md text-sm ${message.type === "success" ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800"}`}
+                                className={`px-3 py-2 rounded-md text-sm ${message.type === "success" ? "bg-emerald-900 text-emerald-300" : "bg-rose-900 text-rose-300"}`}
                             >
                                 {message.text}
                             </div>
@@ -147,12 +147,12 @@ const ChangeUserPlate: React.FC = () => {
                 )}
             </div>
                 {isLoading && (
-                    <div className="absolute inset-0 bg-white/40 rounded-xl flex items-center justify-center gap-3">
-                        <svg className="w-5 h-5 animate-spin text-sky-700" viewBox="0 0 24 24">
+                    <div className="absolute inset-0 bg-white/6 rounded-xl flex items-center justify-center gap-3">
+                        <svg className="w-5 h-5 animate-spin text-white" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                         </svg>
-                        <span className="text-sky-700 font-medium">Sending...</span>
+                        <span className="text-white font-medium">Sending...</span>
                     </div>
                 )}
         </div>

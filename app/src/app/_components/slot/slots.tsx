@@ -12,34 +12,36 @@ const Slots = ({ selectedParking }: { selectedParking: string }) => {
   const available = slots?.filter((s) => s.available).length ?? 0
 
   return (
-    <section className="rounded-lg bg-white p-4 shadow">
+    <section className="rounded-lg card-dark p-4 shadow hover-elevate hover-fade">
       <header className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">Slots</h2>
-          <p className="text-sm text-gray-500">Estacionamiento — {total} en total</p>
+          <h2 className="text-lg font-semibold text-white">Slots</h2>
+          <p className="text-sm text-muted">Estacionamiento — {total} en total</p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-800 text-sm">
-            <span className="w-2 h-2 rounded-full" style={{ background: '#16a34a' }} />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/6 text-white text-sm">
+            <span className="w-2 h-2 rounded-full" style={{ background: 'var(--accent-1)' }} />
             {available} disponibles
           </div>
-          <div className="text-sm text-gray-500">{total - available} ocupados</div>
+          <div className="text-sm text-muted">{total - available} ocupados</div>
         </div>
       </header>
 
       {loadingSlots ? (
         <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="w-full h-28 rounded-lg bg-gray-100 animate-pulse" />
+            <div key={i} className="w-full h-28 rounded-lg bg-white/6 animate-pulse" />
           ))}
         </div>
       ) : !slots || slots.length === 0 ? (
-        <div className="text-gray-500">No hay slots para este parking.</div>
+        <div className="text-muted">No hay slots para este parking.</div>
       ) : (
-        <div className="grid gap-4j grid-cols-2">
+        <div className="grid gap-4 grid-cols-2">
           {slots.map((slot: ParkingSlot) => (
-            <Slot key={slot.id} slot={slot} />
+            <div key={slot.id} className="hover-glow">
+              <Slot slot={slot} />
+            </div>
           ))}
         </div>
       )}

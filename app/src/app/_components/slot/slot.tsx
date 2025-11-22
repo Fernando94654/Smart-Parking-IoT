@@ -21,7 +21,7 @@ const Slot = ({ slot }: { slot: ParkingSlot }) => {
       onClick={handleActivate}
       onTouchStart={handleActivate}
       className={`relative min-w-[180px] sm:min-w-[220px] p-3 rounded-xl transition-all duration-300 overflow-hidden isolate ${
-        isAvailable ? 'bg-linear-to-b from-green-50 to-white border border-green-200' : 'bg-linear-to-b from-red-50 to-white border border-red-200'
+        isAvailable ? 'card-dark border border-white/6' : 'card-dark border border-white/6'
       } ${active ? 'scale-[1.03] shadow-2xl z-10' : 'shadow-sm'}`}
     >
       <div className="flex flex-col items-center gap-2">
@@ -29,7 +29,7 @@ const Slot = ({ slot }: { slot: ParkingSlot }) => {
           className={`w-full h-16 rounded-md flex items-center justify-center text-xs font-medium tracking-wide text-slate-700 shadow-inner group cursor-pointer relative overflow-hidden`
           }
           style={{
-            background: isAvailable ? 'linear-gradient(180deg,#ecfdf5,#ffffff)' : 'linear-gradient(180deg,#fff1f2,#ffffff)'
+            background: isAvailable ? 'linear-gradient(180deg, rgba(16,185,129,0.06), rgba(255,255,255,0.02))' : 'linear-gradient(180deg, rgba(239,68,68,0.06), rgba(255,255,255,0.02))'
           }}
           title={isAvailable ? 'Slot disponible' : 'Slot ocupado'}
         >
@@ -96,9 +96,9 @@ const Slot = ({ slot }: { slot: ParkingSlot }) => {
           </svg>
         </div>
 
-        <div className="w-full text-center">
-          <div className="text-sm font-semibold text-slate-800">Slot</div>
-          <div className="mt-1 inline-block px-2 py-0.5 rounded-md text-sm font-bold" style={{ background: isAvailable ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.12)', color: isAvailable ? '#065f46' : '#7f1d1d' }}>#{slot.id}</div>
+          <div className="w-full text-center">
+          <div className="text-sm font-semibold text-white">Slot</div>
+          <div className="mt-1 inline-block px-2 py-0.5 rounded-md text-sm font-bold" style={{ background: isAvailable ? 'rgba(16,185,129,0.06)' : 'rgba(239,68,68,0.06)', color: isAvailable ? '#8ef3c5' : '#ffb4b4' }}>#{slot.id}</div>
         </div>
       </div>
 
@@ -106,14 +106,14 @@ const Slot = ({ slot }: { slot: ParkingSlot }) => {
       <div className="mt-3 flex items-center justify-between text-sm">
         <div className="flex items-center gap-2">
           <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
-          >
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isAvailable ? 'bg-white/6 text-white' : 'bg-white/6 text-white'}`}
+            >
             {isAvailable ? (
-              <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg className="w-3 h-3 mr-1 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             ) : (
-              <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <svg className="w-3 h-3 mr-1 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M6 18L18 6M6 6l12 12" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             )}
@@ -124,9 +124,9 @@ const Slot = ({ slot }: { slot: ParkingSlot }) => {
 
         {/* Occupied pulse ring (different color/animation) */}
         {!isAvailable ? (
-          <span aria-hidden className="absolute inset-0 rounded-xl pointer-events-none" style={{ boxShadow: '0 0 18px rgba(239,68,68,0.18)', border: '1px solid rgba(239,68,68,0.08)', animation: 'pulse 1.8s infinite' }} />
+          <span aria-hidden className="absolute inset-0 rounded-xl pointer-events-none" style={{ boxShadow: '0 0 18px rgba(255,45,149,0.08)', border: '1px solid rgba(255,45,149,0.04)', animation: 'pulse 1.8s infinite' }} />
         ) : (
-          <span aria-hidden className="absolute -top-2 -right-2 w-3 h-3 rounded-full" style={{ boxShadow: '0 0 12px rgba(16,185,129,0.28)', background: '#10b981' }} />
+          <span aria-hidden className="absolute -top-2 -right-2 w-3 h-3 rounded-full" style={{ boxShadow: '0 0 12px rgba(124,58,237,0.16)', background: 'var(--accent-3)' }} />
         )}
 
         <style>{`@keyframes pulse{0%{box-shadow:0 0 6px rgba(239,68,68,0.12)}50%{box-shadow:0 0 18px rgba(239,68,68,0.22)}100%{box-shadow:0 0 6px rgba(239,68,68,0.12)}}`}</style>
