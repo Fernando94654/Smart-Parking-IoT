@@ -6,13 +6,36 @@ import sharp from "sharp";
 import { PrismaClient } from "./generated/prisma/client";
 
 const prisma = new PrismaClient()
-// const client = mqtt.connect('mqtt://10.24.111.223:1883');
-const client = mqtt.connect('mqtt:// 192.168.137.1:1883');    
+
+const client = mqtt.connect('mqtt://10.22.231.123:1883');    
 const fs = require('fs');
 
-const camTopic = 'cam/topic';
+const camEntryTopic = 'camEntry/topic';
+const camExitTopic = 'camExit/topic';
 const messageTopic = 'message/topic';
+const openEntryMessage = 'openEntry';
+const openExitMessage = 'openExit';
+const ultrasonic1Topic = 'ultrasonic1/topic';
+const ultrasonic2Topic = 'ultrasonic2/topic';
+const ultrasonic3Topic = 'ultrasonic3/topic';
 
+const ultrasonicMap: Record<string, number> = {
+    [ultrasonic1Topic]: 1,
+    [ultrasonic2Topic]: 2,
+    [ultrasonic3Topic]: 3,
+}
+
+// const camMap: Record<string, 
+
+async function updateUltrasonic(topic: string, message: string) {
+    const slotId = ultrasonicMap[topic];
+    if(!slotId) return;
+    const isOccupied = message === 'occupied';
+    await prisma.parkingSlot.update({
+        where: { id: slotId },
+        data: { available: !isOccupied }
+    });
+}
 async function getTextFromImage(buffer: Buffer) {
     const form = new FormData();
     form.append("file", buffer, { filename: "image.jpg", contentType: "image/jpeg" });
@@ -29,23 +52,21 @@ async function getTextFromImage(buffer: Buffer) {
     }
 }
 
-client.on('connect', () => {
+client.on('connect', async () => {
     console.log('Connected to MQTT broker');
-    client.subscribe(camTopic, { qos: 1 }, (err) => { 
-        if(!err) console.log(`Subscribed to ${camTopic}`);
+    client.subscribe(camEntryTopic, { qos: 1 }, (err) => { 
+        if(!err) console.log(`Subscribed to ${camEntryTopic}`);
         else console.error("Subscribe error:", err);
     });
-
-    // const message = 'open_entry';
-    // client.publish(messageTopic, message, { qos: 1 }, (err) => {
-    //     if(!err) console.log(`Message published to ${messageTopic}:`, message);
-    //     else console.error("Publish error:", err);
-    // });
+    client.subscribe(camExitTopic, { qos: 1 }, (err) => { 
+        if(!err) console.log(`Subscribed to ${camExitTopic}`);
+        else console.error("Subscribe error:", err);
+    });
 });
 
 client.on('message', async (topic, message) => {
     console.log('Message received on topic:', topic, 'Message:', message.toString());
-    if(topic === camTopic) {
+    if(topic === camEntryTopic || topic === camExitTopic) {
         console.log('Image data received:', message);
         const base64Data = message.toString();
         const unFlipImageBuffer = Buffer.from(base64Data, 'base64');
@@ -67,23 +88,54 @@ client.on('message', async (topic, message) => {
                 where: { plateNumber: result.plate ?? "" },
                 select: {
                     name: true,
+                    id: true,
                 },
             });
         }else {
             user = null;
         }
-
-        if(user) {
+        const currentParking = await prisma.parking.findFirst({
+            where: { name: "Central Park"}
+        });
+        if(user && currentParking) {
             console.log("User found:", user.name); 
-            const message = 'open_entry';
-            client.publish(messageTopic, message, { qos: 1 }, (err) => {
-                if(!err) console.log(`Message published to ${messageTopic}:`, message);
-                else console.error("Publish error:", err);
-            });
-
+            let message: string | null = null;
+            if(topic === camEntryTopic){
+                message = openEntryMessage;
+                await prisma.stay.create({
+                    data: {
+                        userId: user.id,
+                        startHour: new Date(),
+                        parkingId: currentParking?.id,
+                    },
+                });
+            }else if(topic === camExitTopic) {
+                message = openExitMessage;
+                const stay = await prisma.stay.findFirst({
+                    where: {
+                        userId: user.id,
+                        endHour: null,
+                    },
+                    orderBy: { startHour: 'desc' },
+                });
+                if(stay) {
+                    await prisma.stay.update({
+                        where: { id: stay.id },
+                        data: { endHour: new Date() },
+                    })
+                };
+            }
+            if(message){
+                client.publish(messageTopic, message, { qos: 1 }, (err) => {
+                    if(!err) console.log(`Message published to ${messageTopic}:`, message);
+                    else console.error("Publish error:", err);
+                });
+            }
         } else {
             console.log("No user found with plate number:", result.plate);
         }
+    }else if(topic in ultrasonicMap) {
+        await updateUltrasonic(topic, message.toString());
     }
 });
 

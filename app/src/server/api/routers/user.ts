@@ -20,7 +20,7 @@ export const userRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const plate = input.newPlateNumber.toLowerCase();
+      const plate = input.newPlateNumber.toLowerCase().replace(/-/g, "");
       await db.user.update({
         where: { id: ctx.session.user.id },
         data: { plateNumber: plate },
