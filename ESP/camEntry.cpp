@@ -1,21 +1,21 @@
+// Entry camera code
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include "esp_camera.h"
-#include "Arduino.h"
 #include "base64.h"
 
 #define MQTT_MAX_PACKET_SIZE 51200
 
-const char* ssid = "";
-const char* password = "";
+const char* ssid = "Fernando";
+const char* password = "RoBorregos2025";
 
-const char* mqtt_server = "192.168.1.73";
+const char* mqtt_server = "10.22.231.123";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-String camaraTopic = "cam/topic";
-String request_message = "capture";
+String camaraTopic = "camEntry/topic";
+String request_message = "captureEntry";
 String message_topic = "message/topic";
 
 camera_config_t config = {
