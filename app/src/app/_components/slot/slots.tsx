@@ -21,20 +21,20 @@ const Slots = ({ selectedParking }: { selectedParking: string }) => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3 py-1 text-sm text-white">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="inline-flex min-w-0 items-center gap-2 rounded-full bg-white/6 px-3 py-1 text-sm text-white">
             <span
-              className="h-2 w-2 rounded-full"
+              className="h-2 w-2 rounded-full shrink-0"
               style={{ background: "var(--accent-1)" }}
             />
-            {available} disponibles
+            <span className="truncate">{available} {available === 1 ? "disponible" : "disponibles"}</span>
           </div>
-          <div className="text-muted text-sm">{total - available} ocupados</div>
+          <div className="text-muted text-sm min-w-0 truncate">{total - available} {total - available === 1 ? "ocupado" : "ocupados"}</div>
         </div>
       </header>
 
       {loadingSlots ? (
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
@@ -45,9 +45,9 @@ const Slots = ({ selectedParking }: { selectedParking: string }) => {
       ) : !slots || slots.length === 0 ? (
         <div className="text-muted">No hay slots para este parking.</div>
       ) : (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {slots.map((slot: ParkingSlot) => (
-            <div key={slot.id} className="hover-glow">
+            <div key={slot.id} className="hover-glow w-full">
               <Slot slot={slot} />
             </div>
           ))}
