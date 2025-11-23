@@ -5,63 +5,78 @@ import { useSession, signIn } from "next-auth/react";
 import { api } from "~/trpc/react";
 
 export default function AdminPage() {
-    // TODO: Replace with actual parking selection logic
-    const [selectedParking, setSelectedParking] = useState<string | null>("cmho397rl0000a4h08jnjzoam");
-    const { data: session, status } = useSession();
-    const { data: role, isLoading: roleLoading } = api.user.getMyRole.useQuery(undefined, { enabled: status === 'authenticated' });
+  // TODO: Replace with actual parking selection logic
+  const [selectedParking, setSelectedParking] = useState<string | null>(
+    "cmho397rl0000a4h08jnjzoam",
+  );
+  const { data: session, status } = useSession();
+  const { data: role, isLoading: roleLoading } = api.user.getMyRole.useQuery(
+    undefined,
+    { enabled: status === "authenticated" },
+  );
 
-    if (status === 'loading' || roleLoading) {
-      return (
-        <main className="p-6 w-full">
-          <div className="text-muted">Comprobando permisos…</div>
-        </main>
-      )
-    }
+  if (status === "loading" || roleLoading) {
+    return (
+      <main className="w-full p-6">
+        <div className="text-muted">Comprobando permisos…</div>
+      </main>
+    );
+  }
 
-    if (status === 'unauthenticated') {
-      // Redirect to sign-in preserving callback
-      void signIn(undefined, { callbackUrl: "/admin" });
-      return (
-        <main className="p-6 w-full">
-          <div className="text-muted">Redirigiendo al inicio de sesión…</div>
-        </main>
-      )
-    }
+  if (status === "unauthenticated") {
+    // Redirect to sign-in preserving callback
+    void signIn(undefined, { callbackUrl: "/admin" });
+    return (
+      <main className="w-full p-6">
+        <div className="text-muted">Redirigiendo al inicio de sesión…</div>
+      </main>
+    );
+  }
 
-    if (role !== 'ADMIN') {
-      return (
-        <main className="p-6 w-full">
-          <header className="mb-6">
-            <h1 className="text-2xl font-bold text-white">Acceso denegado</h1>
-            <p className="text-sm text-muted">Necesitas permisos de administrador para ver esta página.</p>
-          </header>
-        </main>
-      )
-    }
+  if (role !== "ADMIN") {
+    return (
+      <main className="w-full p-6">
+        <header className="mb-6">
+          <h1 className="text-2xl font-bold text-white">Acceso denegado</h1>
+          <p className="text-muted text-sm">
+            Necesitas permisos de administrador para ver esta página.
+          </p>
+        </header>
+      </main>
+    );
+  }
 
   return (
-    <div className="p-6 w-full">
+    <div className="w-full p-6">
       <header className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Panel de Administración</h1>
-          <p className="text-sm text-muted">Visión general de usuarios y estadísticas del estacionamiento</p>
+          <h1 className="mb-1 text-2xl font-bold text-white">
+            Panel de Administración
+          </h1>
+          <p className="text-muted text-sm">
+            Visión general de usuarios y estadísticas del estacionamiento
+          </p>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="col-span-2 card-dark rounded-xl p-4 hover-elevate hover-fade">
-          <h2 className="text-lg font-semibold mb-3">Usuarios</h2>
-          <p className="text-sm text-muted">Lista y métricas principales (mock)</p>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="card-dark hover-elevate hover-fade col-span-2 rounded-xl p-4">
+          <h2 className="mb-3 text-lg font-semibold">Usuarios</h2>
+          <p className="text-muted text-sm">
+            Lista y métricas principales (mock)
+          </p>
         </div>
 
         <aside className="space-y-4">
-          <div className="card-dark rounded-xl p-4 hover-elevate hover-fade">
+          <div className="card-dark hover-elevate hover-fade rounded-xl p-4">
             <h3 className="text-lg font-semibold">Estadísticas</h3>
-            <div className="mt-3 text-sm text-muted">Usuarios activos: <strong className="text-white ml-2">34</strong></div>
+            <div className="text-muted mt-3 text-sm">
+              Usuarios activos: <strong className="ml-2 text-white">34</strong>
+            </div>
           </div>
 
           {selectedParking && (
-            <div className="card-dark rounded-xl p-4 hover-elevate hover-fade">
+            <div className="card-dark hover-elevate hover-fade rounded-xl p-4">
               <h3 className="text-lg font-semibold">Estancias recientes</h3>
               <div className="mt-2">
                 <Stays selectedParking={selectedParking} all={true} />

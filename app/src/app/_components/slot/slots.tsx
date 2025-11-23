@@ -8,36 +8,44 @@ const Slots = ({ selectedParking }: { selectedParking: string }) => {
       enabled: !!selectedParking,
     });
 
-  const total = slots?.length ?? 0
-  const available = slots?.filter((s) => s.available).length ?? 0
+  const total = slots?.length ?? 0;
+  const available = slots?.filter((s) => s.available).length ?? 0;
 
   return (
-    <section className="rounded-lg card-dark p-4 shadow hover-elevate hover-fade">
+    <section className="card-dark hover-elevate hover-fade rounded-lg p-4 shadow">
       <header className="mb-4 flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-white">Slots</h2>
-          <p className="text-sm text-muted">Estacionamiento — {total} en total</p>
+          <p className="text-muted text-sm">
+            Estacionamiento — {total} en total
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/6 text-white text-sm">
-            <span className="w-2 h-2 rounded-full" style={{ background: 'var(--accent-1)' }} />
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3 py-1 text-sm text-white">
+            <span
+              className="h-2 w-2 rounded-full"
+              style={{ background: "var(--accent-1)" }}
+            />
             {available} disponibles
           </div>
-          <div className="text-sm text-muted">{total - available} ocupados</div>
+          <div className="text-muted text-sm">{total - available} ocupados</div>
         </div>
       </header>
 
       {loadingSlots ? (
-        <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="w-full h-28 rounded-lg bg-white/6 animate-pulse" />
+            <div
+              key={i}
+              className="h-28 w-full animate-pulse rounded-lg bg-white/6"
+            />
           ))}
         </div>
       ) : !slots || slots.length === 0 ? (
         <div className="text-muted">No hay slots para este parking.</div>
       ) : (
-        <div className="grid gap-4 grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
           {slots.map((slot: ParkingSlot) => (
             <div key={slot.id} className="hover-glow">
               <Slot slot={slot} />
@@ -46,7 +54,7 @@ const Slots = ({ selectedParking }: { selectedParking: string }) => {
         </div>
       )}
     </section>
-  )
-}
+  );
+};
 
 export default Slots;

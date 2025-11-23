@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -22,7 +22,7 @@ export default function UserPage() {
 
   if (status === "loading") {
     return (
-      <main className="p-6 w-full">
+      <main className="w-full p-6">
         <div className="text-muted">Comprobando sesión…</div>
       </main>
     );
@@ -30,10 +30,12 @@ export default function UserPage() {
 
   // At this point, status is either 'authenticated' or we already redirected
   return (
-    <main className="p-6 w-full">
+    <main className="w-full p-6">
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-white">Mi Perfil</h1>
-        <p className="text-sm text-muted">Gestiona tus datos, placa y estancias</p>
+        <p className="text-muted text-sm">
+          Gestiona tus datos, placa y estancias
+        </p>
       </header>
 
       <section className="space-y-6">
