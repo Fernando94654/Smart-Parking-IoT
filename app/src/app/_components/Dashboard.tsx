@@ -14,7 +14,7 @@ export default function Dashboard() {
   const temperatureHistory = api.environment.getTemperatureHistory.useQuery();
 
   return (
-    <div className="p-6 w-full">
+    <div className="p-6 w-full pb-24">
       <header className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Parking Dashboard</h1>
@@ -59,7 +59,7 @@ export default function Dashboard() {
             <h3 className="text-lg font-semibold">Ambiente</h3>
             <div className="mt-3">
               <LineChartComponent
-                title="Temperature History"
+                title="Historial de Temperatura"
                 xData={
                   temperatureHistory.data?.map((entry) => entry.date.getTime()) ?? []
                 }
@@ -67,18 +67,18 @@ export default function Dashboard() {
                   temperatureHistory.data?.map((entry) => Number(entry.temperature)) ??
                   []
                 }
-                xLabel="Time"
-                yLabel="Temperature °C"
+                xLabel="Tiempo"
+                yLabel="Temperatura °C"
               />
             </div>
           </div>
 
-          <div className="card-dark rounded-xl p-4 hover-elevate hover-fade">
+          {/* <div className="card-dark rounded-xl p-4 hover-elevate hover-fade">
             <h3 className="text-lg font-semibold">Resumen</h3>
             <div className="mt-3 text-sm text-muted">
               - Total plazas: <strong className="text-white ml-2">120</strong>
             </div>
-          </div>
+          </div> */}
         </aside>
       </main>
     </div>

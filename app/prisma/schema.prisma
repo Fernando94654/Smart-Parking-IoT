@@ -17,8 +17,19 @@ model User {
   sessions      Session[]
 
   plateNumber String?
+  paymentMethods paymentMethod[]
   role        Role    @default(CLIENT)
   Stay        Stay[]
+}
+
+model paymentMethod {
+  id          String   @id @default(cuid())
+  userId      String
+  cardNumber  String
+  cardHolder  String
+  expiryDate  String
+  cvv         String
+  User        User     @relation(fields: [userId], references: [id])
 }
 
 model Stay {
@@ -27,6 +38,7 @@ model Stay {
   endHour   DateTime?
   userId    String
   parkingId String
+  price     Decimal?
   parking   Parking   @relation(fields: [parkingId], references: [id])
   User      User      @relation(fields: [userId], references: [id])
 }

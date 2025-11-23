@@ -1,4 +1,4 @@
-export const metadata = { title: "Settings" };
+export const metadata = { title: "Configuraciones" };
 
 export default function SettingsPage() {
   return (

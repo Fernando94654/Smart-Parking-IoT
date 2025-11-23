@@ -17,13 +17,14 @@ const formatDuration = (start: string | Date, end?: string | Date | null) => {
   return rmins === 0 ? `${hrs} h` : `${hrs} h ${rmins} min`
 }
 
-const Stays = ({ selectedParking }: { selectedParking: string }) => {
-  const { data: stays, isLoading } = api.parking.getParkingStays.useQuery(selectedParking ?? "", { enabled: !!selectedParking })
+const Stays = ({ selectedParking, all }: { selectedParking: string, all: boolean }) => {
+  const { data: stays, isLoading } = all ? api.parking.getParkingStays.useQuery(selectedParking ?? "", { enabled: !!selectedParking }) :
+  api.user.getUserStays.useQuery()
 
   return (
     <section className="rounded-lg card-dark p-4 shadow">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-medium text-white">Stays</h2>
+        <h2 className="text-lg font-medium text-white">Estancias</h2>
         <div className="text-sm text-muted">{stays ? `${stays.length} registros` : "—"}</div>
       </div>
 
@@ -45,6 +46,7 @@ const Stays = ({ selectedParking }: { selectedParking: string }) => {
                   <th className="py-2">Inicio</th>
                   <th className="py-2">Fin</th>
                   <th className="py-2">Duración</th>
+                  <th className="py-2">Precio</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/4">
@@ -54,6 +56,7 @@ const Stays = ({ selectedParking }: { selectedParking: string }) => {
                         <td className="py-3 text-sm text-muted">{formatDate(s.startHour)}</td>
                         <td className="py-3 text-sm text-muted">{s.endHour ? formatDate(s.endHour) : "En curso"}</td>
                         <td className="py-3 text-sm text-muted">{formatDuration(s.startHour, s.endHour)}</td>
+                        <td className="py-3 text-sm text-muted">{s.price != null ? `$${Number(s.price).toFixed(2)}` : '—'}</td>
                       </tr>
                 ))}
               </tbody>
@@ -70,11 +73,12 @@ const Stays = ({ selectedParking }: { selectedParking: string }) => {
                       <div className="text-xs text-muted">{s.userName}</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xs text-muted">{s.endHour ? "Finalizado" : "En curso"}</div>
-                      <div className="text-xs text-muted">{formatDuration(s.startHour, s.endHour)}</div>
+                          <div className="text-xs text-muted">{s.endHour ? "Finalizado" : "En curso"}</div>
+                          <div className="text-xs text-muted">{formatDuration(s.startHour, s.endHour)}</div>
+                          <div className="text-xs text-muted">{s.price != null ? `$${Number(s.price).toFixed(2)}` : '—'}</div>
                     </div>
                   </div>
-                  <div className="mt-2 text-xs text-muted">{formatDate(s.startHour)} — {s.endHour ? formatDate(s.endHour) : "—"}</div>
+                      <div className="mt-2 text-xs text-muted">{formatDate(s.startHour)} — {s.endHour ? formatDate(s.endHour) : "—"} {s.price != null ? `· $${Number(s.price).toFixed(2)}` : ''}</div>
                 </div>
               )})}
           </div>

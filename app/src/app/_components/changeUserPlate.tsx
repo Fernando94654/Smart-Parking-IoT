@@ -16,12 +16,12 @@ const ChangeUserPlate: React.FC = () => {
         onSuccess: async () => {
             await utils.user.getUserPlate.invalidate();
             setEditing(false);
-            setMessage({ type: "success", text: "Plate updated" });
+            setMessage({ type: "success", text: "Placa actualizada" });
             setTimeout(() => setMessage(null), 3000);
             setSubmitting(false);
         },
         onError: (err) => {
-            setMessage({ type: "error", text: err?.message ?? "Update failed" });
+            setMessage({ type: "error", text: err?.message ?? "Actualización fallida" });
             setTimeout(() => setMessage(null), 4000);
             setSubmitting(false);
         },
@@ -44,7 +44,7 @@ const ChangeUserPlate: React.FC = () => {
     if (!session) {
         return (
             <div className="max-w-md mx-auto p-4 rounded-lg glass border border-white/5">
-                    <p className="text-sm text-muted">Please sign in to view and change your plate.</p>
+                    <p className="text-sm text-muted">Por favor, inicia sesión para ver y cambiar tu placa.</p>
                 </div>
             );
     }
@@ -58,7 +58,7 @@ const ChangeUserPlate: React.FC = () => {
     const onSave = async () => {
         const newPlate = value.trim().toUpperCase();
         if (!validatePlate(newPlate)) {
-            setMessage({ type: "error", text: "Plate must be 2-8 alphanumeric characters" });
+            setMessage({ type: "error", text: "La placa debe tener entre 2 y 8 caracteres alfanuméricos" });
             setTimeout(() => setMessage(null), 3000);
             return;
         }
@@ -68,11 +68,11 @@ const ChangeUserPlate: React.FC = () => {
     };
 
     return (
-        <div className="relative max-w-lg mx-auto card-dark rounded-xl p-4">
+        <div className="relative w-full card-dark rounded-xl p-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-lg font-semibold text-white">Vehicle Plate</h3>
-                    <p className="text-sm text-muted">Your currently registered plate</p>
+                    <h3 className="text-lg font-semibold text-white">Placa del vehículo</h3>
+                    <p className="text-sm text-muted">Placa registrada actualmente</p>
                 </div>
                 <div className="flex items-center gap-2">
                         {!editing ? (
@@ -80,7 +80,7 @@ const ChangeUserPlate: React.FC = () => {
                                     onClick={() => setEditing(true)}
                                     className="inline-flex items-center gap-2 px-3 py-1 rounded-md neon-gradient text-white shadow hover:opacity-95 transition transform hover:-translate-y-0.5 hover:scale-105"
                                 >
-                                    Edit
+                                    Editar
                                 </button>
                             ) : (
                         <button
@@ -90,7 +90,7 @@ const ChangeUserPlate: React.FC = () => {
                             }}
                                     className="px-3 py-1 rounded-md bg-white/5 border text-white/80 hover:bg-white/6 transition transform hover:-translate-y-0.5 hover:scale-105"
                         >
-                            Cancel
+                            Cancelar
                         </button>
                     )}
                 </div>
@@ -98,25 +98,25 @@ const ChangeUserPlate: React.FC = () => {
 
             <div className="mt-4">
                 {loadingPlate ? (
-                    <div className="text-muted">Loading...</div>
+                    <div className="text-muted">Cargando...</div>
                 ) : (
                     <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-4">
                             <div className="px-4 py-2 rounded-md bg-white/6 text-white font-mono text-lg tracking-wider">
                                 {currentPlate ?? "—"}
                             </div>
-                            <div className="text-sm text-muted">You can change this at any time.</div>
+                            <div className="text-sm text-muted">Puedes cambiarla en cualquier momento.</div>
                         </div>
 
                         {editing && (
                             <div className="flex gap-2">
                                 <input
-                                    aria-label="Plate input"
+                                    aria-label="Entrada de placa"
                                     value={value}
                                     onChange={(e) => setValue(e.target.value)}
                                     disabled={isLoading}
                                     className={`flex-1 px-3 py-2 rounded-md border border-white/6 focus:outline-none focus:ring-2 focus:ring-(--accent-1) ${isLoading ? "opacity-60" : ""}`}
-                                    placeholder="Enter new plate (e.g. ABC1234)"
+                                    placeholder="Ingresa nueva placa (ej. ABC1234)"
                                 />
                                 <button
                                     onClick={onSave}
@@ -129,7 +129,7 @@ const ChangeUserPlate: React.FC = () => {
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                                         </svg>
                                     ) : (
-                                        "Save"
+                                        "Guardar"
                                     )}
                                 </button>
                             </div>
@@ -152,7 +152,7 @@ const ChangeUserPlate: React.FC = () => {
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                         </svg>
-                        <span className="text-white font-medium">Sending...</span>
+                        <span className="text-white font-medium">Enviando...</span>
                     </div>
                 )}
         </div>
