@@ -1,6 +1,82 @@
 @import "tailwindcss";
 
-@theme {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+:root {
+  /* Dark theme palette inspired by Cinepolis: deep charcoal + magenta/orange accents */
+  --bg: #0b0f14;
+  --panel: #0f1720;
+  --muted: #9aa6b2;
+  --accent-1: #ff2d95; /* magenta */
+  --accent-2: #ff9a3c; /* orange */
+  --accent-3: #7c3aed; /* purple */
+  --glass: rgba(255, 255, 255, 0.04);
+  --glass-2: rgba(255, 255, 255, 0.02);
+  --font-sans:
+    var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial;
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+}
+
+body {
+  background: linear-gradient(180deg, var(--bg), #041017 80%);
+  color: #e6eef6;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility gradient used across the app */
+.neon-gradient {
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-3));
+}
+
+.card-dark {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0.01)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.glass {
+  background: var(--glass);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+/* small helper to show accent text */
+.text-accent {
+  color: var(--accent-1);
+}
+
+/* Improve chart text visibility on dark backgrounds */
+.chart-dark svg text,
+.chart-dark svg .tick,
+.chart-dark svg .axis-label {
+  fill: #e6eef6 !important;
+  color: #e6eef6 !important;
+}
+
+/* Global hover enhancements */
+.hover-elevate:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+}
+.hover-glow:hover {
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.18);
+}
+.hover-fade:hover {
+  opacity: 0.95;
+}
+
+.text-muted {
+  color: var(--muted);
 }

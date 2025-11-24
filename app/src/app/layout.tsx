@@ -1,10 +1,10 @@
 import "~/styles/globals.css";
 
 import { type Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Poppins, Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
-import Navbar from "./_components/Navbar"
+import Navbar from "./_components/Navbar";
 import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
@@ -13,21 +13,27 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const geist = Geist({
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["600", "700", "800"],
   variable: "--font-geist-sans",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable}`}>
-      <body className="bg-gray-50 min-h-screen text-slate-900">
+    <html lang="en" className={`${poppins.variable} ${inter.variable}`}>
+      <body className="min-h-screen text-gray-100">
         <SessionProvider>
           <TRPCReactProvider>
             <Navbar />
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
               {children}
             </main>
           </TRPCReactProvider>
