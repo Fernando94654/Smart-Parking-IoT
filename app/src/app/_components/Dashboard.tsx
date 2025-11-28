@@ -19,7 +19,7 @@ export default function Dashboard() {
     <div className="w-full p-0 pb-24">
       <header className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Parking Dashboard</h1>
+          <h1 className="text-2xl pt-10 font-bold text-white">Parking Dashboard</h1>
           <p className="text-muted text-sm">
             Selecciona un parking para ver estancias y lugares disponibles
           </p>
