@@ -48,7 +48,7 @@ export default function Navbar() {
                   href="/admin"
                   className="rounded-md px-2 py-1 text-sm font-medium transition-colors duration-150 hover:bg-white/5"
                 >
-                  Administración
+                  Admini
                 </Link>
               )}
 
@@ -61,12 +61,12 @@ export default function Navbar() {
                   >
                     Perfil
                   </Link>
-                  <Link
+                  {/* <Link
                     href="/settings"
                     className="rounded-md px-2 py-1 text-sm font-medium transition-colors duration-150 hover:bg-white/5"
                   >
-                    Configuraciones
-                  </Link>
+                    Config
+                  </Link> */}
                   <button
                     onClick={() => signOut()}
                     className="rounded-md bg-white/5 px-3 py-1 text-sm font-semibold text-white/90 transition-colors duration-150 hover:bg-white/10"
@@ -156,7 +156,7 @@ export default function Navbar() {
             <span>Usuario</span>
           </Link>
 
-          <Link
+          {/* <Link
             href="/settings"
             className="group flex flex-col items-center rounded-md px-3 text-xs text-gray-200 transition-colors duration-150 hover:bg-white/6 hover:text-white"
           >
@@ -173,8 +173,8 @@ export default function Navbar() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span>Configuraciones</span>
-          </Link>
+            <span>Config</span>
+          </Link> */}
 
           {role === "ADMIN" && (
             <Link
@@ -194,7 +194,7 @@ export default function Navbar() {
                   strokeLinejoin="round"
                 />
               </svg>
-              <span>Administración</span>
+              <span>Admin</span>
             </Link>
           )}
 

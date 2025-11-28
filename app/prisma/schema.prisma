@@ -38,7 +38,7 @@ model Stay {
   endHour   DateTime?
   userId    String
   parkingId String
-  price     Decimal?
+  price     Decimal? @default(10.0)
   parking   Parking   @relation(fields: [parkingId], references: [id])
   User      User      @relation(fields: [userId], references: [id])
 }

@@ -16,7 +16,7 @@ export default function Dashboard() {
   const temperatureHistory = api.environment.getTemperatureHistory.useQuery();
 
   return (
-    <div className="w-full p-6 pb-24">
+    <div className="w-full p-0 pb-24">
       <header className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Parking Dashboard</h1>
