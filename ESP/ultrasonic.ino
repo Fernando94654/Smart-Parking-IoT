@@ -22,7 +22,7 @@ const char* MSG_STOP_ENTRY    = "stopEntry";
 const char* CMD_OPEN_ENTRY    = "openEntry";
 
 // ---- SALIDA ----
-const char* MSG_CAPTURE_EXIT = "capture_exit";
+const char* MSG_CAPTURE_EXIT = "captureExit";
 const char* MSG_STOP_EXIT    = "stopExit";
 const char* CMD_OPEN_EXIT    = "openExit";
 
@@ -60,9 +60,12 @@ Servo servoSalida;
 bool carroEntradaDetectado = false;
 bool carroSalidaDetectado  = false;
 
+int confirmEntrada = 0;
+int confirmSalida  = 0;
+const int lecturasRequeridas = 2; // Número de lecturas consecutivas necesarias
+
 long duracion;
 float distancia;
-
 
 // =========================
 //   FUNCION WIFI
@@ -184,19 +187,20 @@ void loop() {
   // =========================
   float dEntrada = medirDistancia(TRIG_ENTRY, ECHO_ENTRY);
 
-  // Serial.print("Entrada: ");
-  // Serial.print(dEntrada);
-  // Serial.println(" cm");
-
-  if (dEntrada < 10.0 && !carroEntradaDetectado) {
-    Serial.println("Carro detectado en ENTRADA → CAPTURE_ENTRY");
-    client.publish(topic, MSG_CAPTURE_ENTRY);
-    carroEntradaDetectado = true;
+  if (dEntrada < 10.0) {
+    confirmEntrada++;
+    if (confirmEntrada >= lecturasRequeridas && !carroEntradaDetectado) {
+      Serial.println("Carro detectado en ENTRADA → CAPTURE_ENTRY");
+      client.publish(topic, MSG_CAPTURE_ENTRY);
+      carroEntradaDetectado = true;
+    }
+  } else {
+    confirmEntrada = 0; // reset si no hay objeto
   }
 
   if (dEntrada > 15.0 && carroEntradaDetectado) {
     Serial.println("Carro se alejó de ENTRADA → STOP_ENTRY");
-    client.publish(topic, MSG_STOP_ENTRY);
+    // client.publish(topic, MSG_STOP_ENTRY);
     carroEntradaDetectado = false;
   }
 
@@ -204,22 +208,27 @@ void loop() {
   //   SENSOR DE SALIDA
   // =========================
   float dSalida = medirDistancia(TRIG_EXIT, ECHO_EXIT);
+  Serial.print("Salida:");
+  Serial.print(dSalida);
+  Serial.print("Entrada:");
+  Serial.println(dEntrada);
 
-  // Serial.print("Salida: ");
-  // Serial.print(dSalida);
-  // Serial.println(" cm");
-
-  if (dSalida < 10.0 && !carroSalidaDetectado) {
-    Serial.println("Carro detectado en SALIDA → CAPTURE_EXIT");
-    client.publish(topic, MSG_CAPTURE_EXIT);
-    carroSalidaDetectado = true;
+  if (dSalida < 10.0) {
+    confirmSalida++;
+    if (confirmSalida >= lecturasRequeridas && !carroSalidaDetectado) {
+      Serial.println("Carro detectado en SALIDA → CAPTURE_EXIT");
+      client.publish(topic, MSG_CAPTURE_EXIT);
+      carroSalidaDetectado = true;
+    }
+  } else {
+    confirmSalida = 0; // reset si no hay objeto
   }
 
   if (dSalida > 15.0 && carroSalidaDetectado) {
     Serial.println("Carro se alejó de SALIDA → STOP_EXIT");
-    client.publish(topic, MSG_STOP_EXIT);
+    // client.publish(topic, MSG_STOP_EXIT);
     carroSalidaDetectado = false;
   }
 
-  delay(500);
+  delay(200);
 }
