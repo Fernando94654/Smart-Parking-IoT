@@ -48,7 +48,7 @@ export default function Navbar() {
                   href="/admin"
                   className="rounded-md px-2 py-1 text-sm font-medium transition-colors duration-150 hover:bg-white/5"
                 >
-                  Administración
+                  Admini
                 </Link>
               )}
 
@@ -173,7 +173,7 @@ export default function Navbar() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span>Configuraciones</span>
+            <span>Config</span>
           </Link>
 
           {role === "ADMIN" && (
