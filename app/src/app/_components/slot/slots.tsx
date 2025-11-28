@@ -6,6 +6,7 @@ const Slots = ({ selectedParking }: { selectedParking: string }) => {
   const { data: slots, isLoading: loadingSlots } =
     api.parking.getParkingSlots.useQuery(selectedParking ?? "", {
       enabled: !!selectedParking,
+      refetchInterval: 200,
     });
 
   const total = slots?.length ?? 0;

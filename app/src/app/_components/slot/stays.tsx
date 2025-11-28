@@ -32,6 +32,7 @@ const Stays = ({
   const { data: stays, isLoading } = all
     ? api.parking.getParkingStays.useQuery(selectedParking ?? "", {
         enabled: !!selectedParking,
+        refetchInterval: 200,
       })
     : api.user.getUserStays.useQuery();
 
