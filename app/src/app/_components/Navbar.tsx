@@ -194,7 +194,7 @@ export default function Navbar() {
                   strokeLinejoin="round"
                 />
               </svg>
-              <span>Administración</span>
+              <span>Admin</span>
             </Link>
           )}
 
