@@ -65,7 +65,7 @@ export default function Navbar() {
                     href="/settings"
                     className="rounded-md px-2 py-1 text-sm font-medium transition-colors duration-150 hover:bg-white/5"
                   >
-                    Configuraciones
+                    Config
                   </Link>
                   <button
                     onClick={() => signOut()}
