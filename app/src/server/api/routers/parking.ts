@@ -39,6 +39,9 @@ export const parkingRouter = createTRPCRouter({
         where: {
           parkingId: input,
         },
+        orderBy: {
+          id: "asc",
+        },
       });
       return slots;
     }),
