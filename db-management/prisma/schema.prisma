@@ -1,10 +1,35 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// Add these enum definitions
+enum SensorType {
+  ULTRASONIC
+  INFRARED
+  MAGNETIC
+  CAMERA
+  LIDAR
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+// Add the Measurement model
+model Measurement {
+  id          String   @id @default(cuid())
+  sensorId    String
+  value       Float
+  timestamp   DateTime @default(now())
+  sensor      Sensor   @relation(fields: [sensorId], references: [id], onDelete: Cascade)
+  
+  @@index([sensorId, timestamp])
 }
 
 model User {
@@ -31,7 +56,7 @@ model Parking {
   name         String
   location     String
   parkingData  ParkingData[]
-  parkignSlots ParkingSlot[]
+  parkingSlots ParkingSlot[]  // Note: Typo here - should be "parkingSlots"?
   stays        Stay[]
 }
 
@@ -56,7 +81,12 @@ model Avenue {
   id String @id
 }
 
-enum Role {
-  ADMIN
-  CLIENT
+model Sensor {
+  id          String        @id @default(cuid())
+  type        SensorType
+  location    String?
+  description String?
+  status      String?       @default("ACTIVE")
+  lastUpdate  DateTime?     @updatedAt
+  measurements Measurement[]
 }
