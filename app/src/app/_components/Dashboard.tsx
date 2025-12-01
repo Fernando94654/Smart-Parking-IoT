@@ -73,7 +73,7 @@ export default function Dashboard() {
                 }
                 yData={
                   temperatureHistory.data?.map((entry) =>
-                    Number(entry.temperature),
+                    Number(entry.reading),
                   ) ?? []
                 }
                 xLabel="Tiempo"

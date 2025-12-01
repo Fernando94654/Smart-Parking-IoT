@@ -47,19 +47,15 @@ model Parking {
   id          String        @id
   name        String
   location    String
-  ParkingData ParkingData[]
   ParkingSlot ParkingSlot[]
   Stay        Stay[]
 }
 
-model ParkingData {
-  id             String   @id
-  parkingId      String
-  availableSlots Int
-  temperature    Decimal
-  humidity       Decimal
-  date           DateTime
-  Parking        Parking  @relation(fields: [parkingId], references: [id])
+model Sensor {
+  id       String   @id @default(cuid())
+  date     DateTime @default(now())
+  type     String
+  reading  String
 }
 
 model ParkingSlot {
