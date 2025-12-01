@@ -3,10 +3,14 @@ import { db } from "~/server/db";
 
 export const enviromentRouter = createTRPCRouter({
   getTemperatureHistory: publicProcedure.query(async () => {
-    const history = await db.parkingData.findMany({
+    const history = await db.sensor.findMany({
       select: {
         date: true,
-        temperature: true,
+        type: true,
+        reading: true,
+      },
+      where: {
+        type: "temperature",
       },
       orderBy: {
         date: "asc",
