@@ -1,57 +1,20 @@
 import 'dotenv/config';
 import mqtt from "mqtt";
-import axios from "axios";
-import FormData from "form-data";
 import sharp from "sharp";
 import { PrismaClient } from "./generated/prisma/client";
+import { getTextFromImage, uploadImage } from './utils/utils';
+const fs = require('fs');
 
 const prisma = new PrismaClient()
-
+// MQTT client setup
 const client = mqtt.connect('mqtt://10.22.231.123:1883');    
-const fs = require('fs');
 
 const camEntryTopic = 'camEntry/topic';
 const camExitTopic = 'camExit/topic';
 const messageTopic = 'message/topic';
 const openEntryMessage = 'openEntry';
 const openExitMessage = 'openExit';
-const ultrasonic1Topic = 'ultrasonic1/topic';
-const ultrasonic2Topic = 'ultrasonic2/topic';
-const ultrasonic3Topic = 'ultrasonic3/topic';
-
-const ultrasonicMap: Record<string, number> = {
-    [ultrasonic1Topic]: 1,
-    [ultrasonic2Topic]: 2,
-    [ultrasonic3Topic]: 3,
-}
-
-// const camMap: Record<string, 
-
-async function updateUltrasonic(topic: string, message: string) {
-    const slotId = ultrasonicMap[topic];
-    if(!slotId) return;
-    const isOccupied = message === 'occupied';
-    await prisma.parkingSlot.update({
-        where: { id: slotId },
-        data: { available: !isOccupied }
-    });
-}
-async function getTextFromImage(buffer: Buffer) {
-    const form = new FormData();
-    form.append("file", buffer, { filename: "image.jpg", contentType: "image/jpeg" });
-
-    try {
-        const response = await axios.post("http://localhost:8001/text-detection", form, {
-            headers: form.getHeaders()
-        });
-        return response.data;
-    } catch (err: unknown) {
-        if (err instanceof Error) {
-            console.error("Error calling text detection service:", err.message);
-        }
-    }
-}
-
+// MQTT subscription to camera topics
 client.on('connect', async () => {
     console.log('Connected to MQTT broker');
     client.subscribe(camEntryTopic, { qos: 1 }, (err) => { 
@@ -63,7 +26,7 @@ client.on('connect', async () => {
         else console.error("Subscribe error:", err);
     });
 });
-
+// Handle messages from subscribed topics
 client.on('message', async (topic, message) => {
     console.log('Message received on topic:', topic, 'Message:', message.toString());
     if(topic === camEntryTopic || topic === camExitTopic) {
@@ -71,7 +34,7 @@ client.on('message', async (topic, message) => {
         const base64Data = message.toString();
         const unFlipImageBuffer = Buffer.from(base64Data, 'base64');
         const imageBuffer = await sharp(unFlipImageBuffer).flop().toBuffer();
-
+        // Save image to local storage for verification
         fs.writeFile('received_image.jpg', imageBuffer, (err: Error) => {
             if(err) {
                 console.error('Error saving image:', err);
@@ -79,9 +42,10 @@ client.on('message', async (topic, message) => {
                 console.log('Image saved as received_image.jpg');
             }
         });
-        // Example usage
+        // Get text from image using text detection service
         const result = await getTextFromImage(imageBuffer);
         console.log("Text detection result:", result);
+        // Get user by plate number
         let user;
         if(result) {
             user = await prisma.user.findFirst({
@@ -97,20 +61,30 @@ client.on('message', async (topic, message) => {
         const currentParking = await prisma.parking.findFirst({
             where: { name: "Central Park"}
         });
+        // Process entry or exit
         if(user && currentParking) {
             console.log("User found:", user.name); 
             let message: string | null = null;
-            if(topic === camEntryTopic){
+            if(topic === camEntryTopic){ // Entry processing
                 message = openEntryMessage;
-                await prisma.stay.create({
+                // Create stay record
+                const stay = await prisma.stay.create({
                     data: {
                         userId: user.id,
                         startHour: new Date(),
                         parkingId: currentParking?.id,
                     },
                 });
-            }else if(topic === camExitTopic) {
+                // Upload entry image to Supabase and update stay record
+                const imagePath = `uploads/${stay.id}_entry.jpg`;
+                await uploadImage(imageBuffer, imagePath);
+                await prisma.stay.update({
+                    where: { id: stay.id },
+                    data: { entryImageUrl: imagePath },
+                });
+            }else if(topic === camExitTopic) { // Exit processing
                 message = openExitMessage;
+                // Find latest stay without endHour
                 const stay = await prisma.stay.findFirst({
                     where: {
                         userId: user.id,
@@ -119,12 +93,20 @@ client.on('message', async (topic, message) => {
                     orderBy: { startHour: 'desc' },
                 });
                 if(stay) {
+                    const imagePath = `uploads/${stay.id}_exit.jpg`;
+                    // Update stay record with exit time and image
                     await prisma.stay.update({
                         where: { id: stay.id },
-                        data: { endHour: new Date() },
+                        data: { 
+                            endHour: new Date(),
+                            exitImageUrl: imagePath
+                         },
                     })
+                    // Upload exit image to Supabase
+                    await uploadImage(imageBuffer, imagePath);
                 };
             }
+            // Publish message to open gates
             if(message){
                 client.publish(messageTopic, message, { qos: 1 }, (err) => {
                     if(!err) console.log(`Message published to ${messageTopic}:`, message);
@@ -134,8 +116,6 @@ client.on('message', async (topic, message) => {
         } else {
             console.log("No user found with plate number:", result.plate);
         }
-    }else if(topic in ultrasonicMap) {
-        await updateUltrasonic(topic, message.toString());
     }
 });
 
