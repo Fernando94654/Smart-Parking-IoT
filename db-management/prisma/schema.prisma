@@ -5,55 +5,99 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id          String  @id @default(cuid())
-  name        String  @unique
-  email       String
-  plateNumber String?
-  role        Role    @default(CLIENT)
-  stays       Stay[]
+  id            String          @id @default(cuid())
+  name          String?
+  email         String?         @unique
+  plateNumber   String?
+  role          Role            @default(CLIENT)
+  emailVerified DateTime?
+  image         String?
+  Account       Account[]
+  Session       Session[]
+  stays         Stay[]
+  paymentMethod paymentMethod[]
 }
 
 model Stay {
-  id            String      @id @default(cuid())
-  startHour     DateTime
-  endHour       DateTime?
-  userId        String
-  parkingId     String
-  parking       Parking     @relation(fields: [parkingId], references: [id])
-  user          User        @relation(fields: [userId], references: [id])
+  id        String    @id @default(cuid())
+  startHour DateTime
+  endHour   DateTime?
+  userId    String
+  parkingId String
+  price     Decimal?  @default(10.0)
+  parking   Parking   @relation(fields: [parkingId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
 }
 
 model Parking {
   id           String        @id @default(cuid())
   name         String
   location     String
-  parkingData  ParkingData[]
   parkignSlots ParkingSlot[]
   stays        Stay[]
 }
 
-model ParkingData {
-  id             String   @id @default(cuid())
-  parkingId      String
-  availableSlots Int
-  temperature    Decimal
-  humidity       Decimal
-  date           DateTime
-  parking        Parking  @relation(fields: [parkingId], references: [id])
+model Sensor {
+  id      String   @id @default(cuid())
+  type    String
+  reading String
+  date    DateTime @default(now())
 }
 
 model ParkingSlot {
-  id           Int     @id @default(autoincrement())
-  available    Boolean
-  parkingId    String
-  parking      Parking @relation(fields: [parkingId], references: [id])
+  available Boolean
+  parkingId String
+  id        Int     @id @default(autoincrement())
+  parking   Parking @relation(fields: [parkingId], references: [id])
 }
 
-model Avenue {
-  id String @id
+model Account {
+  id                       String  @id
+  userId                   String
+  providerAccountId        String
+  provider                 String
+  type                     String
+  access_token             String?
+  expires_at               Int?
+  id_token                 String?
+  refresh_token            String?
+  scope                    String?
+  session_state            String?
+  token_type               String?
+  refresh_token_expires_in Int?
+  User                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id
+  userId       String
+  expires      DateTime
+  sessionToken String   @unique
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model paymentMethod {
+  id         String @id
+  userId     String
+  cardNumber String
+  cardHolder String
+  expiryDate String
+  cvv        String
+  User       User   @relation(fields: [userId], references: [id])
 }
 
 enum Role {
