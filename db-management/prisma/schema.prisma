@@ -22,6 +22,8 @@ model Stay {
   endHour       DateTime?
   userId        String
   parkingId     String
+  entryImageUrl  String?
+  exitImageUrl   String?
   parking       Parking     @relation(fields: [parkingId], references: [id])
   user          User        @relation(fields: [userId], references: [id])
 }
