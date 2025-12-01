@@ -7,6 +7,7 @@ export const enviromentRouter = createTRPCRouter({
       select: {
         date: true,
         type: true,
+        reading: true,
       },
       where: {
         type: "temperature",
