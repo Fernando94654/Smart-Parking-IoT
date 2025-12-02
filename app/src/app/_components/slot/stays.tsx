@@ -109,8 +109,8 @@ const Stays = ({
                     {admin && (
                       <td className="py-3 text-sm text-white">
                         <div className="flex items-center gap-2">
-                          <ImagePreview path={(s as any).entryImageUrl ?? undefined} alt={`entrada-${s.id}`} />
-                          <ImagePreview path={(s as any).exitImageUrl ?? undefined} alt={`salida-${s.id}`} />
+                          <ImagePreview path={s.entryImageUrl ?? undefined} alt={`entrada-${s.id}`} />
+                          <ImagePreview path={s.exitImageUrl ?? undefined} alt={`salida-${s.id}`} />
                         </div>
                       </td>
                     )}
