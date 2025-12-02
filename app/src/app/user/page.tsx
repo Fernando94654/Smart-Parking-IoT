@@ -43,7 +43,7 @@ export default function UserPage() {
         <div className="card-dark rounded-xl p-4">
           <h2 className="text-lg font-semibold">Mis estancias</h2>
           <div className="mt-3">
-            <Stays selectedParking={parkingId} all={false} />
+            <Stays selectedParking={parkingId} all={false} admin={false} />
           </div>
         </div>
         <PaymentMethods />

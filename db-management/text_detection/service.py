@@ -1,43 +1,4 @@
-# from fastapi import FastAPI, File, UploadFile
-# import numpy as np
-# import cv2
-# import easyocr
-
-
-# app = FastAPI()
-# reader = easyocr.Reader(['en', 'es'])
-
-# @app.post("/text-detection")
-
-# async def process(file: UploadFile = File(...)):
-#     content = await file.read()
-#     nparr = np.frombuffer(content, np.uint8)
-#     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-#     result = reader.readtext(img)
-#     center_text = None
-#     center_bbox = None
-
-#     if len(result) == 0:
-#         print("No text detected")
-#         return {"result": ""}
-#     else:
-#         img_center_x = img.shape[1] / 2
-#         # Find the text with most central position
-#         for (bbox, text, prob) in result:
-#             print(f"Detected text: {text} with confidence {prob}")
-#             (tl, tr, br, bl) = bbox
-#             cX = int((tl[0] + br[0]) / 2.0)
-#             if center_text is None:
-#                 center_text = text
-#                 center_bbox = bbox
-#             elif abs(img_center_x - cX) < abs(img_center_x - int((center_bbox[0][0] + center_bbox[2][0]) / 2.0)):
-#                 center_text = text
-#                 center_bbox = bbox
-            
-#     return {"result": center_text}
-
-
+# API endpoint for text detection using Plate Recognizer
 from fastapi import FastAPI, File, UploadFile, HTTPException
 import aiohttp
 from dotenv import load_dotenv

@@ -22,6 +22,7 @@ export const parkingRouter = createTRPCRouter({
         where: {
           parkingId: input,
         },
+        orderBy: { startHour: "desc" },
       });
       const users = await db.user.findMany({
         where: { id: { in: stays.map((stay) => stay.userId) } },

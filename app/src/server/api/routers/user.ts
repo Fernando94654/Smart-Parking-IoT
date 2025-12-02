@@ -7,6 +7,7 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { db } from "~/server/db";
+import { supabaseAdmin } from "~/server/supabaseAdmin";
 
 export const userRouter = createTRPCRouter({
   getUserNameById: publicProcedure
@@ -92,4 +93,17 @@ export const userRouter = createTRPCRouter({
       }
       await db.paymentMethod.delete({ where: { id: input.id } });
     }),
+  getImageUrl: protectedProcedure
+    .input(z.string())
+    .query(async ({ input }) => {
+      const { data, error } = await supabaseAdmin.storage
+        .from("images")
+        .createSignedUrl(input, 3600); // URL valid for 1 hour 
+      if (error) return null;
+      return data?.signedUrl || null;
+    }),
+  getTotalUsers: publicProcedure.query(async () => {
+    const count = await db.user.count();
+    return count;
+  }),
 });
