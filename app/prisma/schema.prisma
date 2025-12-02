@@ -38,6 +38,8 @@ model Stay {
   endHour   DateTime?
   userId    String
   parkingId String
+  entryImageUrl  String?
+  exitImageUrl   String?
   price     Decimal? @default(10.0)
   parking   Parking   @relation(fields: [parkingId], references: [id])
   User      User      @relation(fields: [userId], references: [id])

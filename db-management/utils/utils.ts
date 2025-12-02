@@ -20,7 +20,7 @@ export async function uploadImage(file: Buffer, filePath: string) {
   }
 }
 
-// Function to call text detection service
+// Function to call text detection API service
 export async function getTextFromImage(buffer: Buffer) {
     const form = new FormData();
     form.append("file", buffer, { filename: "image.jpg", contentType: "image/jpeg" });

@@ -14,6 +14,7 @@ export default function AdminPage() {
     undefined,
     { enabled: status === "authenticated" },
   );
+  const totalUsers = api.user.getTotalUsers.useQuery();
 
   if (status === "loading" || roleLoading) {
     return (
@@ -60,28 +61,17 @@ export default function AdminPage() {
       </header>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="card-dark hover-elevate hover-fade col-span-2 rounded-xl p-4">
-          <h2 className="mb-3 text-lg font-semibold">Usuarios</h2>
-          <p className="text-muted text-sm">
-            Lista y métricas principales (mock)
-          </p>
-        </div>
 
         <aside className="space-y-4">
           <div className="card-dark hover-elevate hover-fade rounded-xl p-4">
             <h3 className="text-lg font-semibold">Estadísticas</h3>
             <div className="text-muted mt-3 text-sm">
-              Usuarios activos: <strong className="ml-2 text-white">34</strong>
+              Usuarios activos: <strong className="ml-2 text-white">{totalUsers.data ?? "Cargando..."}</strong>
             </div>
           </div>
 
           {selectedParking && (
-            <div className="card-dark hover-elevate hover-fade rounded-xl p-4">
-              <h3 className="text-lg font-semibold">Estancias recientes</h3>
-              <div className="mt-2">
-                <Stays selectedParking={selectedParking} all={true} />
-              </div>
-            </div>
+              <Stays selectedParking={selectedParking} all={true} admin={true} />
           )}
         </aside>
       </div>

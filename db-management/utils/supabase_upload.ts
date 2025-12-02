@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import path from 'path'
 const fs = require('fs');
 
-dotenv.config()
+dotenv.config({ path: '../.env' });
 
 // Create Supabase client
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE) {
@@ -25,9 +25,9 @@ export async function uploadFile(file: Buffer, filePath: string) {
   }
 }
 
-const filePath = "received_image.jpg"
+const filePath = "../received_image.jpg"
 const image = fs.readFileSync(filePath);
 
 const fileBuffer = Buffer.from(image);
 
-const result = uploadFile(fileBuffer, 'uploads/received_image.jpg');
+const result = uploadFile(fileBuffer, 'uploads/cmijhf0a90003e1horr2rp8la_entry.jpg');
