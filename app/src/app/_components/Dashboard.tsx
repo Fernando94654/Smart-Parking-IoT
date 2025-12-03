@@ -13,7 +13,12 @@ export default function Dashboard() {
     "cmho397rl0000a4h08jnjzoam",
   );
 
-  const temperatureHistory = api.environment.getTemperatureHistory.useQuery();
+  const temperatureHistory = api.environment.getTemperatureHistory.useQuery(undefined, {
+    refetchInterval: 500,
+  });
+  const humidityHistory = api.environment.getHumidityHistory.useQuery(undefined, {
+    refetchInterval: 500,
+  });
 
   return (
     <div className="w-full p-0 pb-24">
@@ -78,6 +83,23 @@ export default function Dashboard() {
                 }
                 xLabel="Tiempo"
                 yLabel="Temperatura °C"
+              />
+            </div>
+            <div className="mt-3">
+              <LineChartComponent
+                title="Historial de Humedad"
+                xData={
+                  humidityHistory.data?.map((entry) =>
+                    entry.date.getTime(),
+                  ) ?? []
+                }
+                yData={
+                  humidityHistory.data?.map((entry) =>
+                    Number(entry.reading),
+                  ) ?? []
+                }
+                xLabel="Tiempo"
+                yLabel="Humedad %"
               />
             </div>
           </div>
