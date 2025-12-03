@@ -7,12 +7,17 @@ const LineChartComponent = ({
   yData,
   xLabel,
   yLabel,
+  yMin,
+  yMax,
 }: {
   title?: string;
   xData: number[];
   yData: number[];
   xLabel: string;
   yLabel: string;
+  // optional explicit y-axis bounds
+  yMin?: number;
+  yMax?: number;
 }) => {
   const chartColor = "var(--accent-2)";
   const containerRef = useRef<HTMLDivElement>(null);
@@ -59,30 +64,68 @@ const LineChartComponent = ({
               return new Date(value).toLocaleString("es-MX", size.width < 420 ? optsSmall : optsLarge);
             };
 
+            // compute y-axis domain (min/max) with a small padding unless explicitly provided
+            const dataMin = yData && yData.length > 0 ? Math.min(...yData) : undefined;
+            const dataMax = yData && yData.length > 0 ? Math.max(...yData) : undefined;
+            let computedYMin: number | undefined = undefined;
+            let computedYMax: number | undefined = undefined;
+
+            if (typeof yMin === 'number') computedYMin = yMin;
+            if (typeof yMax === 'number') computedYMax = yMax;
+
+            if (dataMin !== undefined && dataMax !== undefined) {
+              if (computedYMin === undefined || computedYMax === undefined) {
+                // if all values equal, give a small +/- so the line is visible
+                if (dataMax === dataMin) {
+                  const pad = Math.max(1, Math.abs(dataMax) * 0.05);
+                  computedYMin ??= Math.floor(dataMin - pad);
+                  computedYMax ??= Math.ceil(dataMax + pad);
+                } else {
+                  const range = dataMax - dataMin;
+                  const pad = range * 0.08; // 8% padding
+                  computedYMin ??= Math.floor(dataMin - pad);
+                  computedYMax ??= Math.ceil(dataMax + pad);
+                }
+              }
+            }
+
             return (
-              <LineChart
-                xAxis={[
-                  {
-                    data: xData,
-                    label: xLabel,
-                    // reduce empty margins by fixing domain to data range
-                    ...(minX !== undefined && { min: minX }),
-                    ...(maxX !== undefined && { max: maxX }),
-                    // explicit tick values prevent overlap on small screens
-                    ...(tickValues.length > 0 && { tickValues }),
-                    valueFormatter,
-                  },
-                ]}
-                series={[
-                  {
-                    data: yData,
-                    label: yLabel,
-                    color: chartColor,
-                  },
-                ]}
-                width={size.width}
-                height={size.height}
-              />
+              <>
+                <style>{`.chart-dark svg circle{display:none !important;} .chart-dark svg g[role='presentation'] circle{display:none !important;}`}</style>
+                <LineChart
+                  xAxis={[
+                    {
+                      data: xData,
+                      label: xLabel,
+                      ...(minX !== undefined && { min: minX }),
+                      ...(maxX !== undefined && { max: maxX }),
+                      ...(tickValues.length > 0 && { tickValues }),
+                      valueFormatter,
+                    },
+                  ]}
+                  yAxis={[
+                    {
+                      label: yLabel,
+                      ...(computedYMin !== undefined && { min: computedYMin }),
+                      ...(computedYMax !== undefined && { max: computedYMax }),
+                    },
+                  ]}
+                  series={[
+                    {
+                      data: yData,
+                      label: yLabel,
+                      color: chartColor,
+                    },
+                  ]}
+                  slotProps={{
+                    line: {
+                      strokeWidth: 4,
+                    },
+                  }}
+                  width={size.width}
+                  height={size.height}
+                />
+              </>
             );
           })()
         )}

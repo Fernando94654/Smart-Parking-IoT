@@ -63,7 +63,9 @@ const Stays = ({
         enabled: !!selectedParking,
         refetchInterval: 200,
       })
-    : api.user.getUserStays.useQuery();
+    : api.user.getUserStays.useQuery(undefined, {
+        refetchInterval: 200,
+      });
 
   return (
     <section className="card-dark rounded-lg p-4 shadow">
