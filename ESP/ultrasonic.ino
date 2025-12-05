@@ -2,74 +2,46 @@
 #include <PubSubClient.h>
 #include <Servo.h>
 
-// =========================
-//   CONFIGURACION WIFI
-// =========================
 const char* ssid = "Fernando";
 const char* password = "RoBorregos2025";
 
-// =========================
-//   CONFIGURACION MQTT
-// =========================
 const char* mqtt_server = "10.22.231.123";
 const int mqtt_port = 1883;
 const char* topic = "message/topic";
 
-// ===== MENSAJES MQTT =====
-// ---- ENTRADA ----
 const char* MSG_CAPTURE_ENTRY = "captureEntry";
 const char* MSG_STOP_ENTRY    = "stopEntry";
 const char* CMD_OPEN_ENTRY    = "openEntry";
 
-// ---- SALIDA ----
 const char* MSG_CAPTURE_EXIT = "captureExit";
 const char* MSG_STOP_EXIT    = "stopExit";
 const char* CMD_OPEN_EXIT    = "openExit";
 
-// ========================================
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-// =========================
-//   PINES SENSORES
-// =========================
+#define TRIG_ENTRADA 15 
+#define ECHO_ENTRADA 13 
 
-// SENSOR DE ENTRADA
-#define TRIG_ENTRY 15 
-#define ECHO_ENTRY 13 
+#define TRIG_SALIDA 5     
+#define ECHO_SALIDA 4    
 
-// SENSOR DE SALIDA
-#define TRIG_EXIT 5     
-#define ECHO_EXIT 4    
+#define PIN_SERVO_ENTRADA 14
+#define PIN_SERVO_SALIDA 12
 
-// =========================
-//   PINES SERVOS
-// =========================
-#define SERVO_ENTRY_PIN 14
-#define SERVO_EXIT_PIN 12
-
-// =========================
-//   SERVOS
-// =========================
 Servo servoEntrada;
 Servo servoSalida;
 
-// =========================
-//   VARIABLES
-// =========================
 bool carroEntradaDetectado = false;
 bool carroSalidaDetectado  = false;
 
 int confirmEntrada = 0;
 int confirmSalida  = 0;
-const int lecturasRequeridas = 2; // Número de lecturas consecutivas necesarias
+const int lecturasRequeridas = 2;
 
 long duracion;
 float distancia;
 
-// =========================
-//   FUNCION WIFI
-// =========================
 void setup_wifi() {
   delay(10);
   Serial.println();
@@ -88,9 +60,6 @@ void setup_wifi() {
   Serial.println(WiFi.localIP());
 }
 
-// =========================
-//   FUNCION MEDIR DISTANCIA
-// =========================
 float medirDistancia(int trigPin, int echoPin) {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(4);
@@ -103,9 +72,6 @@ float medirDistancia(int trigPin, int echoPin) {
   return distancia;
 }
 
-// =========================
-//   CALLBACK MQTT
-// =========================
 void callback(char* topic, byte* payload, unsigned int length) {
   String mensaje = "";
   for (unsigned int i = 0; i < length; i++) mensaje += (char)payload[i];
@@ -113,7 +79,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Mensaje recibido: ");
   Serial.println(mensaje);
 
-  // ===== ENTRADA =====
   if (mensaje == CMD_OPEN_ENTRY) {
     Serial.println("ABRIENDO PLUMA DE ENTRADA...");
     servoEntrada.write(180);
@@ -122,7 +87,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println("Pluma de entrada cerrada.");
   }
 
-  // ===== SALIDA =====
   if (mensaje == CMD_OPEN_EXIT) {
     Serial.println("ABRIENDO PLUMA DE SALIDA...");
     servoSalida.write(180);
@@ -132,9 +96,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 }
 
-// =========================
-//   RECONEXIÓN MQTT
-// =========================
 void reconnect() {
   while (!client.connected()) {
     Serial.print("Conectando a MQTT...");
@@ -150,83 +111,66 @@ void reconnect() {
   }
 }
 
-// =========================
-//   SETUP
-// =========================
 void setup() {
   Serial.begin(115200);
 
-  // Pines sensores
-  pinMode(TRIG_ENTRY, OUTPUT);
-  pinMode(ECHO_ENTRY, INPUT);
-  pinMode(TRIG_EXIT, OUTPUT);
-  pinMode(ECHO_EXIT, INPUT);
+  pinMode(TRIG_ENTRADA, OUTPUT);
+  pinMode(ECHO_ENTRADA, INPUT);
+  pinMode(TRIG_SALIDA, OUTPUT);
+  pinMode(ECHO_SALIDA, INPUT);
 
-  // Servos
-  servoEntrada.attach(SERVO_ENTRY_PIN);
-  servoSalida.attach(SERVO_EXIT_PIN);
+  servoEntrada.attach(PIN_SERVO_ENTRADA);
+  servoSalida.attach(PIN_SERVO_SALIDA);
 
   servoEntrada.write(0);
   servoSalida.write(0);
 
-  // WiFi + MQTT
   setup_wifi();
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
 }
 
-// =========================
-//   LOOP PRINCIPAL
-// =========================
 void loop() {
   if (!client.connected()) reconnect();
   client.loop();
 
-  // =========================
-  //   SENSOR DE ENTRADA
-  // =========================
-  float dEntrada = medirDistancia(TRIG_ENTRY, ECHO_ENTRY);
+  float dEntrada = medirDistancia(TRIG_ENTRADA, ECHO_ENTRADA);
 
   if (dEntrada < 10.0) {
     confirmEntrada++;
     if (confirmEntrada >= lecturasRequeridas && !carroEntradaDetectado) {
-      Serial.println("Carro detectado en ENTRADA → CAPTURE_ENTRY");
+      Serial.println("Carro detectado en ENTRADA");
       client.publish(topic, MSG_CAPTURE_ENTRY);
       carroEntradaDetectado = true;
     }
   } else {
-    confirmEntrada = 0; // reset si no hay objeto
+    confirmEntrada = 0;
   }
 
   if (dEntrada > 15.0 && carroEntradaDetectado) {
-    Serial.println("Carro se alejó de ENTRADA → STOP_ENTRY");
-    // client.publish(topic, MSG_STOP_ENTRY);
+    Serial.println("Carro se alejo de ENTRADA");
     carroEntradaDetectado = false;
   }
 
-  // =========================
-  //   SENSOR DE SALIDA
-  // =========================
-  float dSalida = medirDistancia(TRIG_EXIT, ECHO_EXIT);
+  float dSalida = medirDistancia(TRIG_SALIDA, ECHO_SALIDA);
   Serial.print("Salida:");
   Serial.print(dSalida);
-  Serial.print("Entrada:");
+  Serial.print(" Entrada:");
   Serial.println(dEntrada);
 
   if (dSalida < 10.0) {
     confirmSalida++;
     if (confirmSalida >= lecturasRequeridas && !carroSalidaDetectado) {
-      Serial.println("Carro detectado en SALIDA → CAPTURE_EXIT");
+      Serial.println("Carro detectado en SALIDA");
       client.publish(topic, MSG_CAPTURE_EXIT);
       carroSalidaDetectado = true;
     }
   } else {
-    confirmSalida = 0; // reset si no hay objeto
+    confirmSalida = 0;
   }
 
   if (dSalida > 15.0 && carroSalidaDetectado) {
-    Serial.println("Carro se alejó de SALIDA → STOP_EXIT");
-    // client.publish(topic, MSG_STOP_EXIT);
+    Serial.println("Carro se alejo de SALIDA");
     carroSalidaDetectado = false;
   }
 
