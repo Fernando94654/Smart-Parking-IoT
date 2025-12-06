@@ -22,13 +22,13 @@ In modern cities, vehicular parking represents a critical challenge that directl
 
 ```
 Smart-Parking-IoT/
-├── ESP/                    # Sensor and actuator firmware
+├── esp/                    # Sensor and actuator firmware
 ├── app/                    # Web application (T3 Stack)
-├── db-management/          # MQTT backend server
+├── mqtt-server/          # MQTT backend server
 └── API_IOT2025/            # IoT sensors API
 ```
 
-### `/ESP` - Embedded Systems Code
+### `/esp` - Embedded Systems Code
 
 Arduino/C++ firmware for ESP8266 and ESP32 microcontrollers:
 
@@ -55,7 +55,7 @@ Features include:
 - Admin panel for system management
 - Mobile-responsive design
 
-### `/db-management` - MQTT Backend Server
+### `/mqtt-server` - MQTT Backend Server
 
 Node.js server that manages parking entry and exit operations:
 
