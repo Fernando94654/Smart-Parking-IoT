@@ -125,19 +125,19 @@ const ChangeUserPlate: React.FC = () => {
             </div>
 
             {editing && (
-              <div className="flex flex-col sm:flex-row gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row">
                 <input
                   aria-label="Entrada de placa"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                   disabled={isLoading}
-                  className={`flex-1 min-w-0 w-full rounded-md border-fuchsia-600 border-2 px-3 py-2 focus:ring-2 focus:ring-(--accent-1) focus:outline-none ${isLoading ? "opacity-60" : ""}`}
+                  className={`w-full min-w-0 flex-1 rounded-md border-2 border-fuchsia-600 px-3 py-2 focus:ring-2 focus:ring-(--accent-1) focus:outline-none ${isLoading ? "opacity-60" : ""}`}
                   placeholder="Ingresa nueva placa (ej. ABC1234)"
                 />
                 <button
                   onClick={onSave}
                   disabled={isLoading}
-                  className={`neon-gradient inline-flex w-full sm:w-auto justify-center transform items-center gap-2 rounded-md px-4 py-2 text-white shadow transition disabled:opacity-60 ${isLoading ? "scale-100 animate-pulse cursor-wait" : "hover:-translate-y-0.5 hover:scale-105"}`}
+                  className={`neon-gradient inline-flex w-full transform items-center justify-center gap-2 rounded-md px-4 py-2 text-white shadow transition disabled:opacity-60 sm:w-auto ${isLoading ? "scale-100 animate-pulse cursor-wait" : "hover:-translate-y-0.5 hover:scale-105"}`}
                 >
                   {isLoading ? (
                     <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">

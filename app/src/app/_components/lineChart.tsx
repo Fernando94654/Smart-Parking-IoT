@@ -39,14 +39,20 @@ const LineChartComponent = ({
   }, []);
 
   return (
-    <div className="card-dark h-full rounded-lg p-4 shadow-sm">
-      <div className="text-lg font-semibold text-white">{title}</div>
-      <div ref={containerRef} className="chart-dark h-44 sm:h-56 w-full lg:h-110">
-        {size.width > 0 && size.height > 0 && (
+    <div className="card-dark h-full rounded-lg py-4 shadow-sm">
+      <div className="px-4 text-lg font-semibold text-white">{title}</div>
+      <div
+        ref={containerRef}
+        className="chart-dark h-44 w-full sm:h-56 lg:h-92"
+      >
+        {size.width > 0 &&
+          size.height > 0 &&
           (() => {
             // compute responsive options
-            const minX = xData && xData.length > 0 ? Math.min(...xData) : undefined;
-            const maxX = xData && xData.length > 0 ? Math.max(...xData) : undefined;
+            const minX =
+              xData && xData.length > 0 ? Math.min(...xData) : undefined;
+            const maxX =
+              xData && xData.length > 0 ? Math.max(...xData) : undefined;
             const tickCount = size.width < 420 ? 3 : size.width < 768 ? 5 : 8;
             const pointSize = size.width < 420 ? 4 : 6;
             // build explicit tick values from xData to avoid overlapping ticks
@@ -54,24 +60,36 @@ const LineChartComponent = ({
             if (xData && xData.length > 0) {
               const n = Math.min(tickCount, xData.length);
               for (let i = 0; i < n; i++) {
-                const idx = Math.round((i * (xData.length - 1)) / Math.max(1, n - 1));
+                const idx = Math.round(
+                  (i * (xData.length - 1)) / Math.max(1, n - 1),
+                );
                 tickValues.push(xData[idx]!);
               }
             }
             const valueFormatter = (value: number) => {
               const optsSmall = { hour: "numeric", minute: "numeric" } as const;
-              const optsLarge = { month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" } as const;
-              return new Date(value).toLocaleString("es-MX", size.width < 420 ? optsSmall : optsLarge);
+              const optsLarge = {
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+              } as const;
+              return new Date(value).toLocaleString(
+                "es-MX",
+                size.width < 420 ? optsSmall : optsLarge,
+              );
             };
 
             // compute y-axis domain (min/max) with a small padding unless explicitly provided
-            const dataMin = yData && yData.length > 0 ? Math.min(...yData) : undefined;
-            const dataMax = yData && yData.length > 0 ? Math.max(...yData) : undefined;
+            const dataMin =
+              yData && yData.length > 0 ? Math.min(...yData) : undefined;
+            const dataMax =
+              yData && yData.length > 0 ? Math.max(...yData) : undefined;
             let computedYMin: number | undefined = undefined;
             let computedYMax: number | undefined = undefined;
 
-            if (typeof yMin === 'number') computedYMin = yMin;
-            if (typeof yMax === 'number') computedYMax = yMax;
+            if (typeof yMin === "number") computedYMin = yMin;
+            if (typeof yMax === "number") computedYMax = yMax;
 
             if (dataMin !== undefined && dataMax !== undefined) {
               if (computedYMin === undefined || computedYMax === undefined) {
@@ -103,13 +121,6 @@ const LineChartComponent = ({
                       valueFormatter,
                     },
                   ]}
-                  yAxis={[
-                    {
-                      label: yLabel,
-                      ...(computedYMin !== undefined && { min: computedYMin }),
-                      ...(computedYMax !== undefined && { max: computedYMax }),
-                    },
-                  ]}
                   series={[
                     {
                       data: yData,
@@ -127,8 +138,7 @@ const LineChartComponent = ({
                 />
               </>
             );
-          })()
-        )}
+          })()}
       </div>
     </div>
   );

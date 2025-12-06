@@ -21,12 +21,14 @@ const Slot = ({ slot }: { slot: ParkingSlot }) => {
       onClick={handleActivate}
       onTouchStart={handleActivate}
       className={`relative isolate w-full max-w-full overflow-hidden rounded-xl p-3 transition-all duration-300 ${
-        isAvailable ? "card-dark border border-white/6" : "card-dark border border-white/6"
+        isAvailable
+          ? "card-dark border border-white/6"
+          : "card-dark border border-white/6"
       } ${active ? "z-10 scale-[1.03] shadow-2xl" : "shadow-sm"}`}
     >
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex h-56 flex-col items-center justify-center gap-2">
         <div
-          className={`group relative flex h-12 w-full cursor-pointer items-center justify-center overflow-hidden rounded-md text-xs sm:text-sm font-medium tracking-wide text-slate-700 shadow-inner`}
+          className={`group relative flex h-12 w-full cursor-pointer items-center justify-center overflow-hidden rounded-md text-xs font-medium tracking-wide text-slate-700 shadow-inner sm:text-sm`}
           style={{
             background: isAvailable
               ? "linear-gradient(180deg, rgba(16,185,129,0.06), rgba(255,255,255,0.02))"
@@ -120,8 +122,10 @@ const Slot = ({ slot }: { slot: ParkingSlot }) => {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 80 40"
-            className={`h-8 sm:h-10 w-20 sm:w-28 transform transition-transform duration-700 ${
-              active ? "translate-x-4 -translate-y-1 scale-[1.02]" : "group-hover:translate-x-2"
+            className={`h-8 w-20 transform transition-transform duration-700 sm:h-10 sm:w-28 ${
+              active
+                ? "translate-x-4 -translate-y-1 scale-[1.02]"
+                : "group-hover:translate-x-2"
             }`}
           >
             <defs>
@@ -218,12 +222,16 @@ const Slot = ({ slot }: { slot: ParkingSlot }) => {
           </svg>
         </div>
 
-          <div className="w-full text-center">
-          <div className="text-sm sm:text-base font-semibold text-white">Slot</div>
+        <div className="w-full text-center">
+          <div className="text-sm font-semibold text-white sm:text-base">
+            Slot
+          </div>
           <div
-            className="mt-1 inline-block rounded-md px-2 py-0.5 text-sm sm:text-base font-bold"
+            className="mt-1 inline-block rounded-md px-2 py-0.5 text-sm font-bold sm:text-base"
             style={{
-              background: isAvailable ? "rgba(16,185,129,0.06)" : "rgba(239,68,68,0.06)",
+              background: isAvailable
+                ? "rgba(16,185,129,0.06)"
+                : "rgba(239,68,68,0.06)",
               color: isAvailable ? "#8ef3c5" : "#ffb4b4",
             }}
           >
