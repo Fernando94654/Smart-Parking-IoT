@@ -22,7 +22,7 @@ export default function UserPage() {
 
   if (status === "loading") {
     return (
-      <main className="w-full p-6">
+      <main className="mx-auto w-full max-w-6xl p-6">
         <div className="text-muted">Comprobando sesión…</div>
       </main>
     );
@@ -30,9 +30,11 @@ export default function UserPage() {
 
   // At this point, status is either 'authenticated' or we already redirected
   return (
-    <main className="w-full p-6">
+    <main className="mx-auto w-full max-w-6xl p-6">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Mi Perfil</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-white lg:text-4xl">
+          Mi Perfil
+        </h1>
         <p className="text-muted text-sm">
           Gestiona tus datos, placa y estancias
         </p>

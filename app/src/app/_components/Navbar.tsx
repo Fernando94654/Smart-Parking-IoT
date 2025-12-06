@@ -26,11 +26,6 @@ export default function Navbar() {
                   <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zM13 21h8V11h-8v10zM13 3v6h8V3h-8z" />
                 </svg>
               </div>
-              <Link href="/" className="text-lg font-bold tracking-tight">
-                <span className="neon-gradient bg-clip-text text-transparent">
-                  SmartParking
-                </span>
-              </Link>
               <span className="text-muted hidden text-sm sm:inline">
                 Smart Parking
               </span>
@@ -48,7 +43,7 @@ export default function Navbar() {
                   href="/admin"
                   className="rounded-md px-2 py-1 text-sm font-medium transition-colors duration-150 hover:bg-white/5"
                 >
-                  Admini
+                  Admin
                 </Link>
               )}
 
@@ -61,12 +56,6 @@ export default function Navbar() {
                   >
                     Perfil
                   </Link>
-                  {/* <Link
-                    href="/settings"
-                    className="rounded-md px-2 py-1 text-sm font-medium transition-colors duration-150 hover:bg-white/5"
-                  >
-                    Config
-                  </Link> */}
                   <button
                     onClick={() => signOut()}
                     className="rounded-md bg-white/5 px-3 py-1 text-sm font-semibold text-white/90 transition-colors duration-150 hover:bg-white/10"
@@ -155,27 +144,6 @@ export default function Navbar() {
             </svg>
             <span>Usuario</span>
           </Link>
-
-          {/* <Link
-            href="/settings"
-            className="group flex flex-col items-center rounded-md px-3 text-xs text-gray-200 transition-colors duration-150 hover:bg-white/6 hover:text-white"
-          >
-            <svg
-              className="mb-1 h-6 w-6 group-hover:text-white"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path
-                d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06A2 2 0 012.3 17.4l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09c.67 0 1.26-.4 1.51-1a1.65 1.65 0 00-.33-1.82L4.3 4.3a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H11a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09c.67 0 1.26.4 1.51 1a1.65 1.65 0 001.82.33l.06-.06A2 2 0 0121.7 6.6l-.06.06a1.65 1.65 0 00-.33 1.82V11c0 .67.4 1.26 1 1.51z"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span>Config</span>
-          </Link> */}
-
           {role === "ADMIN" && (
             <Link
               href="/admin"

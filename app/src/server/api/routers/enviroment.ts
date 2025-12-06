@@ -4,7 +4,7 @@ import { db } from "~/server/db";
 export const enviromentRouter = createTRPCRouter({
   getTemperatureHistory: publicProcedure.query(async () => {
     // return only records from the last 10 hours
-    const tenHoursAgo = new Date(Date.now() - 10 * 60 * 60 * 1000);
+    // const tenHoursAgo = new Date(Date.now() - 30 * 60 * 60 * 1000);
     const history = await db.sensor.findMany({
       select: {
         date: true,
@@ -13,9 +13,9 @@ export const enviromentRouter = createTRPCRouter({
       },
       where: {
         type: "temperature",
-        date: {
-          gte: tenHoursAgo,
-        },
+        // date: {
+        //   gte: tenHoursAgo,
+        // },
       },
       orderBy: {
         date: "asc",
@@ -25,7 +25,7 @@ export const enviromentRouter = createTRPCRouter({
   }),
   getHumidityHistory: publicProcedure.query(async () => {
     // return only records from the last 10 hours
-    const tenHoursAgo = new Date(Date.now() - 10 * 60 * 60 * 1000);
+    // const tenHoursAgo = new Date(Date.now() - 30 * 60 * 60 * 1000);
     const history = await db.sensor.findMany({
       select: {
         date: true,
@@ -34,9 +34,9 @@ export const enviromentRouter = createTRPCRouter({
       },
       where: {
         type: "humidity",
-        date: {
-          gte: tenHoursAgo,
-        },
+        // date: {
+        //   gte: tenHoursAgo,
+        // },
       },
       orderBy: {
         date: "asc",
