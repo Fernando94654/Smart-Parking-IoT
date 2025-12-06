@@ -42,7 +42,7 @@ export default function DashboardPage() {
     humidityHistory.data?.[humidityHistory.data.length - 1]?.reading;
 
   return (
-    <div className="min-h-screen w-full p-4 pb-24 md:p-6 lg:p-8">
+    <div className="min-h-screen w-full p-4 md:p-6 lg:p-8">
       {/* Header */}
       <header className="mb-6 lg:mb-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -53,26 +53,6 @@ export default function DashboardPage() {
             <p className="text-muted text-sm lg:text-base">
               Monitoreo en tiempo real del estacionamiento
             </p>
-          </div>
-
-          {/* Stats cards - visible on all sizes */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="glass rounded-lg px-4 py-2 text-sm lg:px-5 lg:py-3 lg:text-base">
-              <span className="text-muted">Disponibles:</span>
-              <strong className="ml-2 text-white">{available}</strong>
-            </div>
-            <div className="glass rounded-lg px-4 py-2 text-sm lg:px-5 lg:py-3 lg:text-base">
-              <span className="text-muted">Temp:</span>
-              <strong className="ml-2 text-white">
-                {latestTemp ? `${Number(latestTemp).toFixed(1)}°C` : "—"}
-              </strong>
-            </div>
-            <div className="glass rounded-lg px-4 py-2 text-sm lg:px-5 lg:py-3 lg:text-base">
-              <span className="text-muted">Humedad:</span>
-              <strong className="ml-2 text-white">
-                {latestHum ? `${Number(latestHum).toFixed(0)}%` : "—"}
-              </strong>
-            </div>
           </div>
         </div>
       </header>

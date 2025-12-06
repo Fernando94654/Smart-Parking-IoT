@@ -39,8 +39,8 @@ const LineChartComponent = ({
   }, []);
 
   return (
-    <div className="card-dark h-full rounded-lg p-4 shadow-sm">
-      <div className="text-lg font-semibold text-white">{title}</div>
+    <div className="card-dark h-full rounded-lg py-4 shadow-sm">
+      <div className="px-4 text-lg font-semibold text-white">{title}</div>
       <div
         ref={containerRef}
         className="chart-dark h-44 w-full sm:h-56 lg:h-92"
@@ -119,13 +119,6 @@ const LineChartComponent = ({
                       ...(maxX !== undefined && { max: maxX }),
                       ...(tickValues.length > 0 && { tickValues }),
                       valueFormatter,
-                    },
-                  ]}
-                  yAxis={[
-                    {
-                      label: yLabel,
-                      ...(computedYMin !== undefined && { min: computedYMin }),
-                      ...(computedYMax !== undefined && { max: computedYMax }),
                     },
                   ]}
                   series={[
