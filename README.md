@@ -22,13 +22,13 @@ In modern cities, vehicular parking represents a critical challenge that directl
 
 ```
 Smart-Parking-IoT/
-├── esp/                    # Sensor and actuator firmware
+├── firmware/               # Sensor and actuator firmware
 ├── app/                    # Web application (T3 Stack)
-├── mqtt-server/          # MQTT backend server
-└── API_IOT2025/            # IoT sensors API
+├── mqtt-server/            # MQTT backend server
+└── api-iot/            # IoT sensors API
 ```
 
-### `/esp` - Embedded Systems Code
+### `/firmware` - Embedded Systems Code
 
 Arduino/C++ firmware for ESP8266 and ESP32 microcontrollers:
 
@@ -66,7 +66,7 @@ Node.js server that manages parking entry and exit operations:
 - Stores images in Supabase Storage
 - Controls gate operations via MQTT publish commands
 
-### `/API_IOT2025` - IoT Sensors API
+### `/api-iot` - IoT Sensors API
 
 REST API for sensor data collection and parking slot updates. This API was originally provided by professors at Tecnológico de Monterrey and has been modified for this project.
 
